@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NpsApi.Application.Services;
 using NpsApi.Models;
-using System.Data.SqlClient;
 
 namespace NpsApi.Presentation.Controllers
 {
@@ -20,7 +18,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<FormsGroups>> Get()
     {
-      List<FormsGroups> group = await _groupFormsService.Get();
+      List<FormsGroups> group = await _groupFormsService.GetGroups();
 
       return Ok(group);
     }
@@ -28,15 +26,15 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet("{id}")]
     public async Task<ActionResult<FormsGroups>> GetById(int id)
     {
-      FormsGroups group = await _groupFormsService.GetById(id);
+      FormsGroups group = await _groupFormsService.GetGroupById(id);
 
       return Ok(group);
     }
 
     [HttpPost]
-    public async Task<ActionResult<FormsGroups>> Create(string name)
+    public async Task<ActionResult<FormsGroups>> Create(FormsGroups group)
     {
-      FormsGroups createdGroup = await _groupFormsService.Create(name);
+      FormsGroups createdGroup = await _groupFormsService.CreateGroup(group);
 
       return Ok(createdGroup);
     }
@@ -44,7 +42,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete("{id}")]
     public async Task<ActionResult<string>> Delete(int id)
     {
-      string message = await _groupFormsService.Delete(id);
+      string message = await _groupFormsService.DeleteGroup(id);
 
       return Ok(message);
     }
@@ -52,11 +50,10 @@ namespace NpsApi.Presentation.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<string>> Update(int id, FormsGroups group)
     {
-      string message = await _groupFormsService.Update(id, group);
+      string message = await _groupFormsService.UpdateGroup(id, group);
 
       return Ok(message);
     }
-
 
   }
 }

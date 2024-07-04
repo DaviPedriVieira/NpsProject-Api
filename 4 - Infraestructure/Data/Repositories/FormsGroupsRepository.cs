@@ -14,7 +14,7 @@ namespace NpsApi.Repositories
       _databaseConnection = connection;
     }
 
-    public async Task<int> Create(FormsGroups group)
+    public async Task<FormsGroups> CreateGroup(FormsGroups group)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -27,12 +27,14 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@nome", group.Name);
 
           var id = await command.ExecuteScalarAsync();
-          return Convert.ToInt32(id);
+          group.Id = Convert.ToInt32(id);
+
+          return group;
         }
       }
     }
 
-    public async Task<FormsGroups?> GetById(int id)
+    public async Task<FormsGroups?> GetGroupById(int id)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -66,7 +68,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<FormsGroups>> Get()
+    public async Task<List<FormsGroups>> GetGroups()
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -98,7 +100,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> DeleteGroup(int id)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -123,7 +125,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> Update(int id, FormsGroups group)
+    public async Task<bool> UpdateGroup(int id, FormsGroups group)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {

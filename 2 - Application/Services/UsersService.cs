@@ -16,28 +16,21 @@ namespace NpsApi.Application.Services
       _userRepository = userRepository;
     }
 
-    public async Task<Users> Create(Users user)
+    public async Task<Users> CreateUser(Users user)
     {
       if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Password))
       {
         throw new ArgumentException("O nome/senha não podem ser vazios!");
       }
 
-      Users newUser = new Users
-      {
-        Name = user.Name,
-        Password = user.Password,
-        Type = user.Type,
-      };
-
-      newUser.Id = await _userRepository.Create(user);
+      Users newUser = await _userRepository.CreateUser(user);
 
       return newUser;
     }
 
-    public async Task<List<Users>> Get()
+    public async Task<List<Users>> GetUsers()
     {
-      List<Users> usersList = await _userRepository.Get();
+      List<Users> usersList = await _userRepository.GetUsers();
 
       if (!usersList.Any())
       {

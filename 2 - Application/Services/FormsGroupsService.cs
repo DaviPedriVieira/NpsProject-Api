@@ -16,50 +16,45 @@ namespace NpsApi.Application.Services
       _questionsRepository = questionsRepository;
     }
 
-    public async Task<FormsGroups> Create(string name)
+    public async Task<FormsGroups> CreateGroup(FormsGroups group)
     {
-      if (string.IsNullOrWhiteSpace(name))
+      if (string.IsNullOrWhiteSpace(group.Name))
       {
         throw new ArgumentException("O nome não pode ser vazio!");
       }
 
-      FormsGroups group = new FormsGroups
-      {
-        Name = name,
-      };
+      FormsGroups newGroup = await _formsGroupsRepository.CreateGroup(group);
 
-      group.Id = await _formsGroupsRepository.Create(group);
-
-      return group;
+      return newGroup;
     }
 
-    public async Task<FormsGroups> GetById(int id)
+    public async Task<FormsGroups> GetGroupById(int id)
     {
       if (id <= 0)
       {
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      FormsGroups? group = await _formsGroupsRepository.GetById(id);
+      FormsGroups? group = await _formsGroupsRepository.GetGroupById(id);
 
       if (group == null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum grupo com o Id = {id}!");
       }
 
-      group.Forms = await _formsRepository.GetByGroupId(group.Id);
+      group.Forms = await _formsRepository.GetFormsByGroupId(group.Id);
 
       foreach (Forms form in group.Forms)
       {
-        form.Questions = await _questionsRepository.GetByFormId(form.Id);
+        form.Questions = await _questionsRepository.GetQuestionsByFormId(form.Id);
       }
 
       return group;
     }
 
-    public async Task<List<FormsGroups>> Get()
+    public async Task<List<FormsGroups>> GetGroups()
     {
-      List<FormsGroups> groupsList = await _formsGroupsRepository.Get();
+      List<FormsGroups> groupsList = await _formsGroupsRepository.GetGroups();
 
       if (!groupsList.Any())
       {
@@ -69,14 +64,14 @@ namespace NpsApi.Application.Services
       return groupsList;
     }
 
-    public async Task<string> Delete(int id)
+    public async Task<string> DeleteGroup(int id)
     {
       if (id <= 0)
       {
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      bool deleted = await _formsGroupsRepository.Delete(id);
+      bool deleted = await _formsGroupsRepository.DeleteGroup(id);
 
       if (!deleted)
       {
@@ -86,7 +81,7 @@ namespace NpsApi.Application.Services
       return "Grupo excluído com sucesso";
     }
 
-    public async Task<string> Update(int id, FormsGroups group)
+    public async Task<string> UpdateGroup(int id, FormsGroups group)
     {
       if (string.IsNullOrWhiteSpace(group.Name))
       {
@@ -98,7 +93,7 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      bool edited = await _formsGroupsRepository.Delete(id);
+      bool edited = await _formsGroupsRepository.DeleteGroup(id);
 
       if (!edited)
       {

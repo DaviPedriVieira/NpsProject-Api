@@ -19,7 +19,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<List<Answers>>> Get()
     {
-      List<Answers> answersList = await _answerService.Get();
+      List<Answers> answersList = await _answerService.GetAnswers();
 
       return Ok(answersList);
     }
@@ -27,7 +27,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet("{userId}")]
     public async Task<ActionResult<List<Answers>>> GetByClientId(int userId)
     {
-      List<Answers> answersList = await _answerService.GetAnswerByClientId(userId);
+      List<Answers> answersList = await _answerService.GetAnswersByClientId(userId);
 
       return Ok(answersList);
     }
@@ -35,7 +35,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost]
     public async Task<ActionResult<Answers>> SubmitAnswer(Answers answer)
     {
-      Answers newAnswer = await _answerService.Submit(answer);
+      Answers newAnswer = await _answerService.SubmitAnswer(answer);
 
       return Ok(newAnswer);
     }

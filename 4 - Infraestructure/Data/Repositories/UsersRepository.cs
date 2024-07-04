@@ -2,6 +2,7 @@ using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
+using NpsApi._3___Domain.Enums;
 
 namespace NpsApi.Repositories
 {
@@ -14,7 +15,7 @@ namespace NpsApi.Repositories
       _databaseConnection = connection;
     }
 
-    public async Task<int> Create(Users user)
+    public async Task<Users> CreateUser(Users user)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -29,12 +30,14 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@tipo", user.Type.ToString());
 
           var id = await command.ExecuteScalarAsync();
-          return Convert.ToInt32(id);
+          user.Id = Convert.ToInt32(id);
+
+          return user;
         }
       }
     }
 
-    public async Task<List<Users>> Get()
+    public async Task<List<Users>> GetUsers()
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -55,7 +58,7 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
                 Password = reader.GetString("senha"),
-                Type = Enum.Parse<Users.UserType>(reader.GetString("tipo")),
+                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
               };
 
               allUsers.Add(user);

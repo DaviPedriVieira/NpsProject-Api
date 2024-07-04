@@ -19,7 +19,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<Forms>> Get()
     {
-      List<Forms> group = await _formsService.Get();
+      List<Forms> group = await _formsService.GetForms();
 
       return Ok(group);
     }
@@ -27,7 +27,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet("{id}")]
     public async Task<ActionResult<Forms>> GetById(int id)
     {
-      Forms form = await _formsService.GetById(id);
+      Forms form = await _formsService.GetFormById(id);
 
       return Ok(form);
     }
@@ -35,7 +35,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost]
     public async Task<ActionResult<Forms>> Create(Forms form)
     {
-      Forms createdForm = await _formsService.Create(form);
+      Forms createdForm = await _formsService.CreateForm(form);
 
       return Ok(createdForm);
     }
@@ -43,7 +43,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete("{id}")]
     public async Task<ActionResult<Forms>> Delete(int id)
     {
-      string message = await _formsService.Delete(id);
+      string message = await _formsService.DeleteForm(id);
 
       return Ok(message);
     }
@@ -51,7 +51,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<FormsGroups>> Update(int id, Forms form)
     {
-      var message = await _formsService.Update(id, form);
+      var message = await _formsService.UpdateForm(id, form);
 
       return Ok(message);
     }

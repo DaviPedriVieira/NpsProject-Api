@@ -1,6 +1,8 @@
-﻿namespace NpsApi._3___Domain.Enums
+namespace NpsApi._3___Domain.Enums
 {
-  public class UserEnum
+  public enum UserType
   {
+    Administrador,
+    Cliente
   }
 }

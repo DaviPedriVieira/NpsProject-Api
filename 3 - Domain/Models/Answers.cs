@@ -6,7 +6,7 @@ namespace NpsApi.Models
     public int QuestionId { get; set; }
     public int UserId { get; set; }
     public int Grade { get; set; }
-    public string? Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
   }
 }

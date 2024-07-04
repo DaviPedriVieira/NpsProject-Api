@@ -18,7 +18,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost]
     public async Task<ActionResult<Users>> Create(Users user)
     {
-      Users createdUser = await _usersService.Create(user);
+      Users createdUser = await _usersService.CreateUser(user);
 
       return Ok(createdUser);
     }
@@ -26,7 +26,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<Users>> Get()
     {
-      List<Users> users = await _usersService.Get();
+      List<Users> users = await _usersService.GetUsers();
 
       return Ok(users);
     }

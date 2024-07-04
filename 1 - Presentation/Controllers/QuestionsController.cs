@@ -18,7 +18,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<Questions>> Get()
     {
-      List<Questions> group = await _questionsService.Get();
+      List<Questions> group = await _questionsService.GetQuestions();
 
       return Ok(group);
     }
@@ -26,7 +26,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet("{id}")]
     public async Task<ActionResult<Questions>> GetById(int id)
     {
-      Questions question = await _questionsService.GetById(id);
+      Questions question = await _questionsService.GetQuestionById(id);
 
       return Ok(question);
     }
@@ -42,7 +42,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete]
     public async Task<ActionResult<Questions>> Delete(int id)
     {
-      string message = await _questionsService.Delete(id);
+      string message = await _questionsService.DeleteQuestion(id);
 
       return Ok(message);
     }
@@ -50,7 +50,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<Questions>> Update(int id, Questions question)
     {
-      var message = await _questionsService.Update(id, question);
+      var message = await _questionsService.UpdateQuestion(id, question);
 
       return Ok(message);
     }

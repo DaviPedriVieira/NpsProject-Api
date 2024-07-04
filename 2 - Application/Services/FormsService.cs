@@ -1,7 +1,5 @@
-using NpsApi.Data;
 using NpsApi.Models;
 using NpsApi.Repositories;
-using System.Data.SqlClient;
 
 namespace NpsApi.Application.Services
 {
@@ -17,46 +15,45 @@ namespace NpsApi.Application.Services
       _questionsRepository = questionsRepository;
     }
 
-    public async Task<Forms> Create(Forms form)
+    public async Task<Forms> CreateForm(Forms form)
     {
       if (string.IsNullOrWhiteSpace(form.Name))
       {
         throw new ArgumentException("O nome não pode ser vazio!");
       }
 
-      Forms newForm = new Forms
+      Forms newForm = await _formsRepository.CreateForm(form);
+
+      foreach (var question in form.Questions)
       {
-        Name = form.Name,
-        GroupId = form.GroupId,
-      };
-
-      newForm.Id = await _formsRepository.Create(newForm);
-
+        newForm.Questions.Add(await _questionsRepository.CreateQuestion(question, newForm.Id));
+      }
+      
       return newForm;
     }
 
-    public async Task<Forms> GetById(int id)
+    public async Task<Forms> GetFormById(int id)
     {
       if (id <= 0)
       {
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      Forms? form = await _formsRepository.GetById(id);
+      Forms? form = await _formsRepository.GetFormById(id);
 
       if (form == null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum forulário com o Id = {id}!");
       }
 
-      form.Questions = await _questionsRepository.GetByFormId(form.Id);
+      form.Questions = await _questionsRepository.GetQuestionsByFormId(form.Id);
 
       return form;
     }
 
-    public async Task<List<Forms>> Get()
+    public async Task<List<Forms>> GetForms()
     {
-      List<Forms> groupsList = await _formsRepository.Get();
+      List<Forms> groupsList = await _formsRepository.GetForms();
 
       if (!groupsList.Any())
       {
@@ -66,9 +63,16 @@ namespace NpsApi.Application.Services
       return groupsList;
     }
 
-    public async Task<string> Delete(int id)
+    public async Task<string> DeleteForm(int id)
     {
-      bool deleted = await _formsRepository.Delete(id);
+      if (id <= 0)
+      {
+        throw new ArgumentException("O id não pode ser menor ou igual a zero!");
+      }
+
+      _questionsRepository.DeleteQuestionsAccordingForm(id);
+
+      bool deleted = await _formsRepository.DeleteForm(id);
 
       if (!deleted)
       {
@@ -78,7 +82,7 @@ namespace NpsApi.Application.Services
       return "Formulário excluído com sucesso";
     }
 
-    public async Task<string> Update(int id, Forms form)
+    public async Task<string> UpdateForm(int id, Forms form)
     {
       if (string.IsNullOrWhiteSpace(form.Name))
       {
@@ -90,7 +94,7 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O Id/Id do grupo não podem ser menores ou iguais a zero!");
       }
 
-      bool edited = await _formsRepository.Delete(id);
+      bool edited = await _formsRepository.UpdateForm(id, form);
 
       if (!edited)
       {

@@ -23,39 +23,33 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("A pergunta não pode ser vazia!");
       }
 
-      Questions newQuestion = new Questions
-      {
-        Content = question.Content,
-        FormId = question.FormId,
-      };
-
-      newQuestion.Id = await _questionsRepository.Create(newQuestion);
+      Questions newQuestion = await _questionsRepository.CreateQuestion(question, question.FormId);
 
       return newQuestion;
     }
 
-    public async Task<Questions> GetById(int id)
+    public async Task<Questions> GetQuestionById(int id)
     {
       if (id <= 0)
       {
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      Questions? question = await _questionsRepository.GetById(id);
+      Questions? question = await _questionsRepository.GetQuestionById(id);
 
       if (question == null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
-      question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
+      //question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
 
       return question;
     }
 
-    public async Task<List<Questions>> Get()
+    public async Task<List<Questions>> GetQuestions()
     {
-      List<Questions> questionsList = await _questionsRepository.Get();
+      List<Questions> questionsList = await _questionsRepository.GetQuestions();
 
       if (!questionsList.Any())
       {
@@ -65,9 +59,9 @@ namespace NpsApi.Application.Services
       return questionsList;
     }
 
-    public async Task<string> Delete(int id)
+    public async Task<string> DeleteQuestion(int id)
     {
-      bool deleted = await _questionsRepository.Delete(id);
+      bool deleted = await _questionsRepository.DeleteQuestion(id);
 
       if (!deleted)
       {
@@ -77,7 +71,7 @@ namespace NpsApi.Application.Services
       return "Pergunta excluída com sucesso";
     }
 
-    public async Task<string> Update(int id, Questions question)
+    public async Task<string> UpdateQuestion(int id, Questions question)
     {
       if (string.IsNullOrWhiteSpace(question.Content))
       {
@@ -89,7 +83,7 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O Id/Id do formulário não podem ser menores ou iguais a zero!");
       }
 
-      bool edited = await _questionsRepository.Delete(id);
+      bool edited = await _questionsRepository.DeleteQuestion(id);
 
       if (!edited)
       {

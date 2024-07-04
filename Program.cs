@@ -1,6 +1,6 @@
+using NpsApi.Application.Services;
 using NpsApi.Data;
 using NpsApi.Repositories;
-using NpsApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

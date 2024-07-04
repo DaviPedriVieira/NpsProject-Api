@@ -12,7 +12,7 @@ namespace NpsApi.Application.Services
       _answersRepository = answersRepository;
     }
 
-    public async Task<Answers> Submit(Answers answer)
+    public async Task<Answers> SubmitAnswer(Answers answer)
     {
       if (answer.Grade < 0 || answer.Grade > 10)
       {
@@ -32,7 +32,7 @@ namespace NpsApi.Application.Services
       return newAnswer;
     }
 
-    public async Task<List<Answers>> GetAnswerByClientId(int userId)
+    public async Task<List<Answers>> GetAnswersByClientId(int userId)
     {
       if (userId <= 0)
       {
@@ -49,7 +49,7 @@ namespace NpsApi.Application.Services
       return answers;
     }
 
-    public async Task<List<Answers>> Get()
+    public async Task<List<Answers>> GetAnswers()
     {
       List<Answers> answersList = await _answersRepository.GetAnswers();
 
