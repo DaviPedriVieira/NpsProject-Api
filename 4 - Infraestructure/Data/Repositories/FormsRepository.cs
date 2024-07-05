@@ -29,13 +29,14 @@ namespace NpsApi.Repositories
 
           var id = await command.ExecuteScalarAsync();
 
-          Forms newForm = new Forms {
+          Forms newForm = new Forms
+          {
             Id = Convert.ToInt32(id),
             GroupId = form.GroupId,
             Name = form.Name,
           };
 
-          return newForm;
+          return form;
         }
       }
     }
@@ -72,40 +73,6 @@ namespace NpsApi.Repositories
             }
           }
         }
-      }
-    }
-
-    public async Task<List<Forms>> GetFormsByGroupId(int groupId)
-    {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
-      {
-        await connection.OpenAsync();
-
-        string query = "SELECT * FROM formularios WHERE idGrupo = @idGrupo";
-
-        List<Forms> formsList = new List<Forms>();
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-          command.Parameters.AddWithValue("@idGrupo", groupId);
-
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
-          {
-            while (await reader.ReadAsync())
-            {
-              Forms form = new Forms
-              {
-                Id = reader.GetInt32("id"),
-                Name = reader.GetString("nome"),
-                Questions = new List<Questions>(),
-              };
-
-              formsList.Add(form);
-            }
-          }
-        }
-
-        return formsList;
       }
     }
 
@@ -190,6 +157,40 @@ namespace NpsApi.Repositories
             return false;
           }
         }
+      }
+    }
+
+    public async Task<List<Forms>> GetFormsByGroupId(int groupId)
+    {
+      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "SELECT * FROM formularios WHERE idGrupo = @idGrupo";
+
+        List<Forms> formsList = new List<Forms>();
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@idGrupo", groupId);
+
+          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          {
+            while (await reader.ReadAsync())
+            {
+              Forms form = new Forms
+              {
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("nome"),
+                Questions = new List<Questions>(),
+              };
+
+              formsList.Add(form);
+            }
+          }
+        }
+
+        return formsList;
       }
     }
 

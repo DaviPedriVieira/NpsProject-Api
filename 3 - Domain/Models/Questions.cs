@@ -5,12 +5,11 @@ namespace NpsApi.Models
     public int Id { get; set; }
     public int FormId { get; set; }
     public string Content { get; set; } = string.Empty;
-
-    //public ICollection<Answers> Answers { get; set; }
+    public ICollection<Answers> Answers { get; set; }
 
     public Questions()
     {
-     // Answers = new List<Answers>();
+     Answers = new List<Answers>();
     }
   }
 }

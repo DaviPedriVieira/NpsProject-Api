@@ -7,12 +7,13 @@ namespace NpsApi.Application.Services
   {
     private readonly FormsRepository _formsRepository;
     private readonly QuestionsRepository _questionsRepository;
+    private readonly AnswersRepository _answersRepository;
 
-
-    public FormsService(FormsRepository repository, QuestionsRepository questionsRepository)
+    public FormsService(FormsRepository repository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
     {
       _formsRepository = repository;
       _questionsRepository = questionsRepository;
+      _answersRepository = answersRepository;
     }
 
     public async Task<Forms> CreateForm(Forms form)
@@ -24,11 +25,12 @@ namespace NpsApi.Application.Services
 
       Forms newForm = await _formsRepository.CreateForm(form);
 
-      foreach (var question in form.Questions)
+      foreach (Questions question in form.Questions)
       {
-        newForm.Questions.Add(await _questionsRepository.CreateQuestion(question, newForm.Id));
+        question.FormId = newForm.Id;
+        newForm.Questions.Add(await _questionsRepository.CreateQuestion(question));
       }
-      
+
       return newForm;
     }
 
@@ -70,7 +72,13 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      _questionsRepository.DeleteQuestionsAccordingForm(id);
+      List<Questions> questionsList = await _questionsRepository.GetQuestionsByFormId(id);
+
+      foreach (Questions question in questionsList)
+      {
+        await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+        await _questionsRepository.DeleteQuestion(question.Id);
+      }
 
       bool deleted = await _formsRepository.DeleteForm(id);
 

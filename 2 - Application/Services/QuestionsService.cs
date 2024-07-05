@@ -23,7 +23,7 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("A pergunta não pode ser vazia!");
       }
 
-      Questions newQuestion = await _questionsRepository.CreateQuestion(question, question.FormId);
+      Questions newQuestion = await _questionsRepository.CreateQuestion(question);
 
       return newQuestion;
     }
@@ -42,7 +42,7 @@ namespace NpsApi.Application.Services
         throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
-      //question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
+      question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
 
       return question;
     }
@@ -80,7 +80,7 @@ namespace NpsApi.Application.Services
 
       if (id <= 0 || question.FormId <= 0)
       {
-        throw new ArgumentException("O Id/Id do formulário não podem ser menores ou iguais a zero!");
+        throw new ArgumentException("O Id e Id do formulário não podem ser menores ou iguais a zero!");
       }
 
       bool edited = await _questionsRepository.DeleteQuestion(id);

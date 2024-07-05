@@ -8,12 +8,14 @@ namespace NpsApi.Application.Services
     private readonly FormsGroupsRepository _formsGroupsRepository;
     private readonly FormsRepository _formsRepository;
     private readonly QuestionsRepository _questionsRepository;
+    private readonly AnswersRepository _answersRepository;
 
-    public FormsGroupsService(FormsGroupsRepository repository, FormsRepository formsRepository, QuestionsRepository questionsRepository)
+    public FormsGroupsService(FormsGroupsRepository repository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
     {
       _formsGroupsRepository = repository;
       _formsRepository = formsRepository;
       _questionsRepository = questionsRepository;
+      _answersRepository = answersRepository;
     }
 
     public async Task<FormsGroups> CreateGroup(FormsGroups group)
@@ -47,6 +49,11 @@ namespace NpsApi.Application.Services
       foreach (Forms form in group.Forms)
       {
         form.Questions = await _questionsRepository.GetQuestionsByFormId(form.Id);
+
+        foreach (Questions question in form.Questions)
+        {
+          question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
+        }
       }
 
       return group;
@@ -69,6 +76,21 @@ namespace NpsApi.Application.Services
       if (id <= 0)
       {
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
+      }
+
+      List<Forms> formsInsideGroup = await _formsRepository.GetFormsByGroupId(id);
+
+      foreach (Forms form in formsInsideGroup)
+      {
+        List<Questions> questionsList = await _questionsRepository.GetQuestionsByFormId(form.Id);
+
+        foreach (Questions question in questionsList)
+        {
+          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+        }
+
+        await _questionsRepository.DeleteQuestionByFormId(form.Id);
+        await _formsRepository.DeleteForm(form.Id);
       }
 
       bool deleted = await _formsGroupsRepository.DeleteGroup(id);

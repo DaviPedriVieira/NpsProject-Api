@@ -14,7 +14,7 @@ namespace NpsApi.Repositories
       _databaseConnection = connection;
     }
 
-    public async Task<Questions> CreateQuestion(Questions question, int formId)
+    public async Task<Questions> CreateQuestion(Questions question)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -25,11 +25,10 @@ namespace NpsApi.Repositories
         using (SqlCommand command = new SqlCommand(query, connection))
         {
           command.Parameters.AddWithValue("@conteudo", question.Content);
-          command.Parameters.AddWithValue("@idFormulario", formId);
+          command.Parameters.AddWithValue("@idFormulario", question.FormId);
 
           var id = await command.ExecuteScalarAsync();
           question.Id = Convert.ToInt32(id);
-          question.FormId = formId;
 
           return question;
         }
@@ -57,6 +56,7 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 FormId = reader.GetInt32("idFormulario"),
                 Content = reader.GetString("conteudo"),
+                Answers = new List<Answers>(),
               };
 
               return question;
@@ -67,39 +67,6 @@ namespace NpsApi.Repositories
             }
           }
         }
-      }
-    }
-
-    public async Task<List<Questions>> GetQuestionsByFormId(int formId)
-    {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
-      {
-        await connection.OpenAsync();
-
-        string query = "SELECT * FROM perguntas WHERE idFormulario = @idFormulario";
-
-        List<Questions> questionsList = new List<Questions>();
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-          command.Parameters.AddWithValue("@idFormulario", formId);
-
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
-          {
-            while (await reader.ReadAsync())
-            {
-              Questions question = new Questions
-              {
-                Id = reader.GetInt32("id"),
-                Content = reader.GetString("conteudo"),
-              };
-
-              questionsList.Add(question);
-            }
-          }
-        }
-
-        return questionsList;
       }
     }
 
@@ -124,6 +91,7 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 FormId = reader.GetInt32("idFormulario"),
                 Content = reader.GetString("conteudo"),
+                Answers = new List<Answers>(),
               };
 
               allQuestions.Add(question);
@@ -186,13 +154,63 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async void DeleteQuestionsAccordingForm(int id)
+    public async Task<bool> DeleteQuestionByFormId(int formId)
     {
-      List<Questions> formQuestions = await GetQuestionsByFormId(id);
-
-      foreach (Questions question in formQuestions)
+      using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
-        await DeleteQuestion(question.Id);
+        await connection.OpenAsync();
+
+        string query = "DELETE FROM perguntas WHERE idFormulario = @idFormulario";
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@idFormulario", formId);
+
+          try
+          {
+            await command.ExecuteNonQueryAsync();
+            return true;
+          }
+          catch (SqlException)
+          {
+            return false;
+          }
+        }
+      }
+    }
+
+    public async Task<List<Questions>> GetQuestionsByFormId(int formId)
+    {
+      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "SELECT * FROM perguntas WHERE idFormulario = @idFormulario";
+
+        List<Questions> questionsList = new List<Questions>();
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@idFormulario", formId);
+
+          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          {
+            while (await reader.ReadAsync())
+            {
+              Questions question = new Questions
+              {
+                Id = reader.GetInt32("id"),
+                FormId = reader.GetInt32("idFormulario"),
+                Content = reader.GetString("conteudo"),
+                Answers = new List<Answers>(),
+              };
+
+              questionsList.Add(question);
+            }
+          }
+        }
+
+        return questionsList;
       }
     }
 

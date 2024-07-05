@@ -19,15 +19,7 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("Nota inválida!");
       }
 
-      Answers newAnswer = new Answers
-      {
-        QuestionId = answer.QuestionId,
-        UserId = answer.UserId,
-        Grade = answer.Grade,
-        Description = answer.Description,
-      };
-
-      newAnswer.Id = await _answersRepository.SubmitAnswer(newAnswer);
+      Answers newAnswer = await _answersRepository.SubmitAnswer(answer);
 
       return newAnswer;
     }
@@ -39,11 +31,11 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O id do usuário não pode ser menor ou igual a zero!");
       }
 
-      List<Answers>? answers = await _answersRepository.GetAnswersByClientId(userId);
+      List<Answers> answers = await _answersRepository.GetAnswersByClientId(userId);
 
-      if (answers == null)
+      if (!answers.Any())
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum usuário com o Id = {userId}!");
+        throw new KeyNotFoundException($"Não foi encontrada nenhuma pergunta do usuário com o Id = {userId}!");
       }
 
       return answers;

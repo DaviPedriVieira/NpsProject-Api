@@ -14,7 +14,7 @@ namespace NpsApi.Repositories
       _connection = connection;
     }
 
-    public async Task<int> SubmitAnswer(Answers answer)
+    public async Task<Answers> SubmitAnswer(Answers answer)
     {
       using(SqlConnection connection = _connection.GetConnectionString())
       {
@@ -30,20 +30,22 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@descricao", answer.Description);
 
           var id = await command.ExecuteScalarAsync();
-          return Convert.ToInt32(id);
+          answer.Id = Convert.ToInt32(id);
+
+          return answer;
         }
       }
     }
 
-    public async Task<List<Answers>?> GetAnswersByClientId(int userId)
+    public async Task<List<Answers>> GetAnswersByClientId(int userId)
     {
+      List<Answers> answersList = new List<Answers>();
+
       using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
         string query = "SELECT * FROM  respostas WHERE idUsuario = @idUsuario";
-
-        List<Answers> answersList = new List<Answers>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -140,5 +142,31 @@ namespace NpsApi.Repositories
         return answersList;
       }
     }
+
+    public async Task<bool> DeleteAnswersByQuestionId(int questionId)
+    {
+      using (SqlConnection connection = _connection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "DELETE FROM respostas WHERE idPergunta = @idPergunta";
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@idPergunta", questionId);
+
+          try
+          {
+            await command.ExecuteNonQueryAsync();
+            return true;
+          }
+          catch (SqlException)
+          {
+            return false;
+          }
+        }
+      }
+    }
+
   }
 }
