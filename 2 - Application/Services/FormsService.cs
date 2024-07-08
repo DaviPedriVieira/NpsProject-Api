@@ -87,7 +87,7 @@ namespace NpsApi.Application.Services
         return "Não foi possível excluir o formulário!";
       }
 
-      return "Formulário excluído com sucesso";
+      return "Formulário excluíd!";
     }
 
     public async Task<string> UpdateForm(int id, Forms form)
@@ -109,7 +109,7 @@ namespace NpsApi.Application.Services
         return "Não foi possível editar o formulário!";
       }
 
-      return "Formulário editado com sucesso!";
+      return "Formulário editado!";
     }
   }
 }

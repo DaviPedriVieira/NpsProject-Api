@@ -37,6 +37,31 @@ namespace NpsApi.Repositories
       }
     }
 
+    public async Task<bool> DeleteAnswer(int id)
+    {
+      using (SqlConnection connection = _connection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "DELETE FROM respostas WHERE id = @id";
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@id", id);
+
+          try
+          {
+            await command.ExecuteNonQueryAsync();
+            return true;
+          }
+          catch (SqlException)
+          {
+            return false;
+          }
+        }
+      }
+    }
+
     public async Task<List<Answers>> GetAnswersByClientId(int userId)
     {
       List<Answers> answersList = new List<Answers>();

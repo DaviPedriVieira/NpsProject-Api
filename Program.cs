@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using NpsApi.Application.Services;
 using NpsApi.Data;
 using NpsApi.Repositories;
@@ -24,6 +25,19 @@ builder.Services.AddScoped<UsersRepository>();
 builder.Services.AddScoped<AnswersService>();
 builder.Services.AddScoped<AnswersRepository>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+      options.Cookie.Name = "NpsProject.AuthCookie";
+      options.Cookie.HttpOnly = true;
+      options.ExpireTimeSpan = TimeSpan.FromHours(4); 
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+  options.AddPolicy("AdmininistradorPolicy", policy => policy.RequireRole("Administrador"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +49,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

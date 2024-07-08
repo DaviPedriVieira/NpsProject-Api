@@ -52,5 +52,22 @@ namespace NpsApi.Application.Services
 
       return answersList;
     }
+
+    public async Task<string> DeleteAnswer(int id)
+    {
+      if (id <= 0)
+      {
+        throw new ArgumentException("O id não pode ser menor ou igual a zero!");
+      }
+
+      bool deleted = await _answersRepository.DeleteAnswer(id);
+
+      if (!deleted)
+      {
+        return "Não foi possível excluir a resposta!";
+      }
+
+      return "Resposta excluída!";
+    }
   }
 }

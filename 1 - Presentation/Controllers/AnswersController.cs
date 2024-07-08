@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NpsApi.Application.Services;
@@ -16,6 +17,7 @@ namespace NpsApi.Presentation.Controllers
       _answerService = answersService;
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet]
     public async Task<ActionResult<List<Answers>>> Get()
     {
@@ -24,6 +26,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(answersList);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{userId}")]
     public async Task<ActionResult<List<Answers>>> GetByClientId(int userId)
     {
@@ -32,12 +35,22 @@ namespace NpsApi.Presentation.Controllers
       return Ok(answersList);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Answers>> SubmitAnswer(Answers answer)
     {
       Answers newAnswer = await _answerService.SubmitAnswer(answer);
 
       return Ok(newAnswer);
+    }
+
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Forms>> Delete(int id)
+    {
+      string message = await _answerService.DeleteAnswer(id);
+
+      return Ok(message);
     }
   }
 }

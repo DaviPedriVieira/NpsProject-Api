@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NpsApi.Application.Services;
 using NpsApi.Models;
@@ -15,6 +16,7 @@ namespace NpsApi.Presentation.Controllers
       _questionsService = questionsService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<Questions>> Get()
     {
@@ -23,6 +25,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(group);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Questions>> GetById(int id)
     {
@@ -31,6 +34,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(question);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
     public async Task<ActionResult<Questions>> Create(Questions question)
     {
@@ -39,7 +43,8 @@ namespace NpsApi.Presentation.Controllers
       return Ok(createdQuestion);
     }
 
-    [HttpDelete]
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpDelete("{id}")]
     public async Task<ActionResult<Questions>> Delete(int id)
     {
       string message = await _questionsService.DeleteQuestion(id);
@@ -47,6 +52,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(message);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
     public async Task<ActionResult<Questions>> Update(int id, Questions question)
     {

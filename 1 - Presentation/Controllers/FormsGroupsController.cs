@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NpsApi.Application.Services;
 using NpsApi.Models;
@@ -15,6 +16,7 @@ namespace NpsApi.Presentation.Controllers
       _groupFormsService = groupFormsService;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<FormsGroups>> Get()
     {
@@ -23,6 +25,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(group);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<FormsGroups>> GetById(int id)
     {
@@ -31,6 +34,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(group);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
     public async Task<ActionResult<FormsGroups>> Create(FormsGroups group)
     {
@@ -39,6 +43,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(createdGroup);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<string>> Delete(int id)
     {
@@ -47,6 +52,7 @@ namespace NpsApi.Presentation.Controllers
       return Ok(message);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
     public async Task<ActionResult<string>> Update(int id, FormsGroups group)
     {

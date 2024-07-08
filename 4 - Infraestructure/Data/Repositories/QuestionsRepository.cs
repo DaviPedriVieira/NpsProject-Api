@@ -2,6 +2,8 @@ using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
+using System.Reflection;
 
 namespace NpsApi.Repositories
 {
@@ -213,6 +215,5 @@ namespace NpsApi.Repositories
         return questionsList;
       }
     }
-
   }
 }

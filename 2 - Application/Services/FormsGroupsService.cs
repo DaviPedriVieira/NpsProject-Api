@@ -100,7 +100,7 @@ namespace NpsApi.Application.Services
         return "Não foi possível excluir o grupo!";
       }
 
-      return "Grupo excluído com sucesso";
+      return "Grupo excluído!";
     }
 
     public async Task<string> UpdateGroup(int id, FormsGroups group)
@@ -122,7 +122,7 @@ namespace NpsApi.Application.Services
         return "Não foi possível editar!";
       }
 
-      return "Editado com sucesso!";
+      return "Grupo editado!";
     }
 
   }

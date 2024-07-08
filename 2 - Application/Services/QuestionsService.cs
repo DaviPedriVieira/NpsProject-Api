@@ -68,7 +68,7 @@ namespace NpsApi.Application.Services
         return "Não foi possível excluir a pergunta!";
       }
 
-      return "Pergunta excluída com sucesso";
+      return "Pergunta excluída!";
     }
 
     public async Task<string> UpdateQuestion(int id, Questions question)
@@ -90,7 +90,7 @@ namespace NpsApi.Application.Services
         return "Não foi possível editar a pergunta!";
       }
 
-      return "Pergunta editada com sucesso!";
+      return "Pergunta editada!";
     }
   }
 }
