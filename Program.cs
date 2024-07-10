@@ -14,14 +14,19 @@ builder.Services.AddSwaggerGen();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddSingleton(new DataBaseConnection(connectionString));
+
 builder.Services.AddScoped<FormsGroupsService>();
 builder.Services.AddScoped<FormsGroupsRepository>();
+
 builder.Services.AddScoped<FormsService>();
 builder.Services.AddScoped<FormsRepository>();
+
 builder.Services.AddScoped<QuestionsService>();
 builder.Services.AddScoped<QuestionsRepository>();
+
 builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<UsersRepository>();
+
 builder.Services.AddScoped<AnswersService>();
 builder.Services.AddScoped<AnswersRepository>();
 
@@ -29,8 +34,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
       options.Cookie.Name = "NpsProject.AuthCookie";
-      options.Cookie.HttpOnly = true;
-      options.ExpireTimeSpan = TimeSpan.FromHours(4); 
+      options.ExpireTimeSpan = TimeSpan.FromHours(1);
     });
 
 builder.Services.AddAuthorization(options =>

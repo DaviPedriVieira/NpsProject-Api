@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using NpsApi.Application.Services;
 using NpsApi.Models;
-using NpsApi.Repositories;
 using System.Security.Claims;
 
 namespace NpsApi.Presentation.Controllers
@@ -55,21 +53,19 @@ namespace NpsApi.Presentation.Controllers
          new Claim(ClaimTypes.Role, user.Type.ToString())
       };
 
-      ClaimsIdentity claimsIdentity = new ClaimsIdentity(
-        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+      ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-      AuthenticationProperties authProperties = new AuthenticationProperties
+      var authProperties = new AuthenticationProperties
       {
-        IsPersistent = true,
-        ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
+        AllowRefresh = true,
+        ExpiresUtc = DateTime.UtcNow.AddHours(1),
+        IsPersistent = true
       };
 
-      await HttpContext.SignInAsync(
-        CookieAuthenticationDefaults.AuthenticationScheme,
-        new ClaimsPrincipal(claimsIdentity),
-        authProperties);
+      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
 
-      return Ok("Login realizado!");
+      return Ok($"Login realizado!");
     }
 
     [HttpPost("/logout")]

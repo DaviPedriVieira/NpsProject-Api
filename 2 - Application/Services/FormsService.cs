@@ -50,6 +50,11 @@ namespace NpsApi.Application.Services
 
       form.Questions = await _questionsRepository.GetQuestionsByFormId(form.Id);
 
+      foreach (Questions question in form.Questions)
+      {
+        question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
+      }
+
       return form;
     }
 
@@ -76,7 +81,9 @@ namespace NpsApi.Application.Services
 
       foreach (Questions question in questionsList)
       {
-        await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+        List<Answers> answersList = await _answersRepository.GetAnswersByQuestionId(question.Id);
+        answersList.ForEach(async answer => await _answersRepository.DeleteAnswer(answer.Id));
+
         await _questionsRepository.DeleteQuestion(question.Id);
       }
 

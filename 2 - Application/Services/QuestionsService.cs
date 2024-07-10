@@ -1,7 +1,5 @@
-using NpsApi.Data;
 using NpsApi.Models;
 using NpsApi.Repositories;
-using System.Data.SqlClient;
 
 namespace NpsApi.Application.Services
 {
@@ -61,6 +59,9 @@ namespace NpsApi.Application.Services
 
     public async Task<string> DeleteQuestion(int id)
     {
+      List<Answers> answersList = await _answersRepository.GetAnswersByQuestionId(id);
+      answersList.ForEach(async answer => await _answersRepository.DeleteAnswer(answer.Id));
+
       bool deleted = await _questionsRepository.DeleteQuestion(id);
 
       if (!deleted)

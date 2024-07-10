@@ -2,8 +2,6 @@ using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Reflection;
 
 namespace NpsApi.Repositories
 {
@@ -142,31 +140,6 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@id", id);
           command.Parameters.AddWithValue("@conteudo", question.Content);
-
-          try
-          {
-            await command.ExecuteNonQueryAsync();
-            return true;
-          }
-          catch (SqlException)
-          {
-            return false;
-          }
-        }
-      }
-    }
-
-    public async Task<bool> DeleteQuestionByFormId(int formId)
-    {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
-      {
-        await connection.OpenAsync();
-
-        string query = "DELETE FROM perguntas WHERE idFormulario = @idFormulario";
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-          command.Parameters.AddWithValue("@idFormulario", formId);
 
           try
           {

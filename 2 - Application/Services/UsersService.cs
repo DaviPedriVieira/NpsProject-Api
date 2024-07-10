@@ -1,9 +1,5 @@
-using NpsApi.Data;
 using NpsApi.Models;
 using NpsApi.Repositories;
-using System.Data;
-using System.Data.SqlClient;
-using System.Xml.Linq;
 
 namespace NpsApi.Application.Services
 {

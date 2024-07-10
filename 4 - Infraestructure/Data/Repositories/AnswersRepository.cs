@@ -167,31 +167,5 @@ namespace NpsApi.Repositories
         return answersList;
       }
     }
-
-    public async Task<bool> DeleteAnswersByQuestionId(int questionId)
-    {
-      using (SqlConnection connection = _connection.GetConnectionString())
-      {
-        await connection.OpenAsync();
-
-        string query = "DELETE FROM respostas WHERE idPergunta = @idPergunta";
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-          command.Parameters.AddWithValue("@idPergunta", questionId);
-
-          try
-          {
-            await command.ExecuteNonQueryAsync();
-            return true;
-          }
-          catch (SqlException)
-          {
-            return false;
-          }
-        }
-      }
-    }
-
   }
 }

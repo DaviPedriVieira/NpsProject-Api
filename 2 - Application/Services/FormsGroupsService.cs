@@ -86,10 +86,12 @@ namespace NpsApi.Application.Services
 
         foreach (Questions question in questionsList)
         {
-          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+          List<Answers> answersList = await _answersRepository.GetAnswersByQuestionId(question.Id);
+          answersList.ForEach(async answer => await _answersRepository.DeleteAnswer(answer.Id));
+
+          await _questionsRepository.DeleteQuestion(question.Id);
         }
 
-        await _questionsRepository.DeleteQuestionByFormId(form.Id);
         await _formsRepository.DeleteForm(form.Id);
       }
 
@@ -115,7 +117,7 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O id não pode ser menor ou igual a zero!");
       }
 
-      bool edited = await _formsGroupsRepository.DeleteGroup(id);
+      bool edited = await _formsGroupsRepository.UpdateGroup(id, group);
 
       if (!edited)
       {

@@ -1,4 +1,3 @@
-
 namespace NpsApi.Models
 {
   public class FormsGroups

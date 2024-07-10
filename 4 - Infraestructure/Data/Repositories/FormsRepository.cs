@@ -36,7 +36,7 @@ namespace NpsApi.Repositories
             Name = form.Name,
           };
 
-          return form;
+          return newForm;
         }
       }
     }
