@@ -3,6 +3,8 @@ using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
 using NpsApi._3___Domain.Enums;
+using System.Drawing;
+using Microsoft.OpenApi.Extensions;
 
 namespace NpsApi.Repositories
 {

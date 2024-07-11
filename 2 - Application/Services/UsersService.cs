@@ -19,6 +19,14 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("O nome/senha não podem ser vazios!");
       }
 
+      List<Users> users = await GetUsers();
+      Users? repeatedNameUser = users.FirstOrDefault(User => User.Name == user.Name);
+
+      if(repeatedNameUser != null)
+      {
+        throw new ArgumentException("Nome de usuário já existente!");
+      }
+
       Users newUser = await _userRepository.CreateUser(user);
 
       return newUser;

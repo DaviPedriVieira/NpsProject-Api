@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 builder.Services.AddSingleton(new DataBaseConnection(connectionString));
 
 builder.Services.AddScoped<FormsGroupsService>();
@@ -24,11 +24,11 @@ builder.Services.AddScoped<FormsRepository>();
 builder.Services.AddScoped<QuestionsService>();
 builder.Services.AddScoped<QuestionsRepository>();
 
-builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<UsersRepository>();
-
 builder.Services.AddScoped<AnswersService>();
 builder.Services.AddScoped<AnswersRepository>();
+
+builder.Services.AddScoped<UsersService>();
+builder.Services.AddScoped<UsersRepository>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

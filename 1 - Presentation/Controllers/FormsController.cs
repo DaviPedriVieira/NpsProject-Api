@@ -56,7 +56,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<FormsGroups>> Update(int id, Forms form)
     {
-      var message = await _formsService.UpdateForm(id, form);
+      string message = await _formsService.UpdateForm(id, form);
 
       return Ok(message);
     }

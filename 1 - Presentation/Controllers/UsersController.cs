@@ -56,14 +56,7 @@ namespace NpsApi.Presentation.Controllers
       ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
       ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-      var authProperties = new AuthenticationProperties
-      {
-        AllowRefresh = true,
-        ExpiresUtc = DateTime.UtcNow.AddHours(1),
-        IsPersistent = true
-      };
-
-      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
+      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
       return Ok($"Login realizado!");
     }

@@ -56,7 +56,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpPut("{id}")]
     public async Task<ActionResult<Questions>> Update(int id, Questions question)
     {
-      var message = await _questionsService.UpdateQuestion(id, question);
+      string message = await _questionsService.UpdateQuestion(id, question);
 
       return Ok(message);
     }
