@@ -1,5 +1,7 @@
+using NpsApi._3___Domain.Enums;
 using NpsApi.Models;
 using NpsApi.Repositories;
+using System.Reflection.PortableExecutable;
 
 namespace NpsApi.Application.Services
 {
@@ -17,6 +19,11 @@ namespace NpsApi.Application.Services
       if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Password))
       {
         throw new ArgumentException("O nome/senha não podem ser vazios!");
+      }
+
+      if (Enum.TryParse<UserType>($"{user.Type}", true, out _)) 
+      {
+        throw new ArgumentException("Tipo inexistente!");
       }
 
       List<Users> users = await GetUsers();

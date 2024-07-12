@@ -20,23 +20,17 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "INSERT INTO formularios (nome, idGrupo) VALUES (@nome, @idGrupo); SELECT SCOPE_IDENTITY();";
+        string query = "INSERT INTO formularios (nome, idGrupo) VALUES (@Name, @GroupId); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@nome", form.Name);
-          command.Parameters.AddWithValue("@idGrupo", form.GroupId);
+          command.Parameters.AddWithValue("@Name", form.Name);
+          command.Parameters.AddWithValue("@GroupId", form.GroupId);
 
           var id = await command.ExecuteScalarAsync();
+          form.Id = Convert.ToInt32(id);
 
-          Forms newForm = new Forms
-          {
-            Id = Convert.ToInt32(id),
-            GroupId = form.GroupId,
-            Name = form.Name,
-          };
-
-          return newForm;
+          return form;
         }
       }
     }
@@ -47,11 +41,11 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "SELECT * FROM formularios WHERE id = @id";
+        string query = "SELECT * FROM formularios WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
+          command.Parameters.AddWithValue("@Id", id);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
@@ -115,11 +109,11 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "DELETE FROM formularios WHERE id = @id";
+        string query = "DELETE FROM formularios WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
+          command.Parameters.AddWithValue("@Id", id);
 
           try
           {
@@ -140,12 +134,12 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "UPDATE formularios SET nome = @nome WHERE id = @id";
+        string query = "UPDATE formularios SET nome = @Name WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
-          command.Parameters.AddWithValue("@nome", form.Name);
+          command.Parameters.AddWithValue("@Id", id);
+          command.Parameters.AddWithValue("@Name", form.Name);
 
           try
           {
@@ -166,13 +160,13 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "SELECT * FROM formularios WHERE idGrupo = @idGrupo";
+        string query = "SELECT * FROM formularios WHERE idGrupo = @GroupId";
 
         List<Forms> formsList = new List<Forms>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@idGrupo", groupId);
+          command.Parameters.AddWithValue("@GroupId", groupId);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {

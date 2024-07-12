@@ -28,7 +28,7 @@ namespace NpsApi.Application.Services
       foreach (Questions question in form.Questions)
       {
         question.FormId = newForm.Id;
-        newForm.Questions.Add(await _questionsRepository.CreateQuestion(question));
+        await _questionsRepository.CreateQuestion(question);
       }
 
       return newForm;
@@ -106,7 +106,7 @@ namespace NpsApi.Application.Services
 
       if (id <= 0 || form.GroupId <= 0)
       {
-        throw new ArgumentException("O Id/Id do grupo não podem ser menores ou iguais a zero!");
+        throw new ArgumentException("O Id e o Id do grupo não podem ser menores ou iguais a zero!");
       }
 
       bool edited = await _formsRepository.UpdateForm(id, form);

@@ -3,33 +3,32 @@ using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
 using NpsApi._3___Domain.Enums;
-using System.Drawing;
 using Microsoft.OpenApi.Extensions;
 
 namespace NpsApi.Repositories
 {
   public class UsersRepository
   {
-    private readonly DataBaseConnection _databaseConnection;
+    private readonly DataBaseConnection _connection;
 
     public UsersRepository(DataBaseConnection connection)
     {
-      _databaseConnection = connection;
+      _connection = connection;
     }
 
     public async Task<Users> CreateUser(Users user)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "INSERT INTO usuarios (nome, senha, tipo) VALUES (@nome, @senha, @tipo); SELECT SCOPE_IDENTITY();";
+        string query = "INSERT INTO usuarios (nome, senha, tipo) VALUES (@Name, @Password, @Type); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@nome", user.Name);
-          command.Parameters.AddWithValue("@senha", user.Password);
-          command.Parameters.AddWithValue("@tipo", user.Type.ToString());
+          command.Parameters.AddWithValue("@Name", user.Name);
+          command.Parameters.AddWithValue("@Password", user.Password);
+          command.Parameters.AddWithValue("@Type", user.Type.ToString());
 
           var id = await command.ExecuteScalarAsync();
           user.Id = Convert.ToInt32(id);
@@ -41,7 +40,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Users>> GetUsers()
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -70,6 +69,5 @@ namespace NpsApi.Repositories
         return allUsers;
       }
     }
-
   }
 }

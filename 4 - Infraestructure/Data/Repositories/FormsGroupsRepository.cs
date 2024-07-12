@@ -20,11 +20,11 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "INSERT INTO grupoFormularios (nome) VALUES (@nome); SELECT SCOPE_IDENTITY();";
+        string query = "INSERT INTO grupoFormularios (nome) VALUES (@Name); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@nome", group.Name);
+          command.Parameters.AddWithValue("@Name", group.Name);
 
           var id = await command.ExecuteScalarAsync();
           group.Id = Convert.ToInt32(id);
@@ -40,11 +40,11 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "SELECT * FROM grupoFormularios WHERE id = @id";
+        string query = "SELECT * FROM grupoFormularios WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
+          command.Parameters.AddWithValue("@Id", id);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
@@ -106,11 +106,11 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "DELETE FROM grupoFormularios WHERE id = @id";
+        string query = "DELETE FROM grupoFormularios WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
+          command.Parameters.AddWithValue("@Id", id);
 
           try
           {
@@ -131,12 +131,12 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "UPDATE grupoFormularios SET nome = @nome WHERE id = @id";
+        string query = "UPDATE grupoFormularios SET nome = @Name WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
-          command.Parameters.AddWithValue("@nome", group.Name);
+          command.Parameters.AddWithValue("@Id", id);
+          command.Parameters.AddWithValue("@Name", group.Name);
 
           try
           {

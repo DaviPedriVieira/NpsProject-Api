@@ -7,25 +7,25 @@ namespace NpsApi.Repositories
 {
   public class QuestionsRepository
   {
-    private readonly DataBaseConnection _databaseConnection;
+    private readonly DataBaseConnection _connection;
 
     public QuestionsRepository(DataBaseConnection connection)
     {
-      _databaseConnection = connection;
+      _connection = connection;
     }
 
     public async Task<Questions> CreateQuestion(Questions question)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "INSERT INTO perguntas (conteudo, idFormulario) VALUES (@conteudo, @idFormulario); SELECT SCOPE_IDENTITY();";
+        string query = "INSERT INTO perguntas (conteudo, idFormulario) VALUES (@Content, @FormId); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@conteudo", question.Content);
-          command.Parameters.AddWithValue("@idFormulario", question.FormId);
+          command.Parameters.AddWithValue("@Content", question.Content);
+          command.Parameters.AddWithValue("@FormId", question.FormId);
 
           var id = await command.ExecuteScalarAsync();
           question.Id = Convert.ToInt32(id);
@@ -37,15 +37,15 @@ namespace NpsApi.Repositories
 
     public async Task<Questions?> GetQuestionById(int id)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "SELECT * FROM perguntas WHERE id = @id";
+        string query = "SELECT * FROM perguntas WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
+          command.Parameters.AddWithValue("@Id", id);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
@@ -72,7 +72,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Questions>> GetQuestions()
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -105,15 +105,15 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteQuestion(int id)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "DELETE FROM perguntas WHERE id = @id";
+        string query = "DELETE FROM perguntas WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
+          command.Parameters.AddWithValue("@Id", id);
 
           try
           {
@@ -130,16 +130,16 @@ namespace NpsApi.Repositories
 
     public async Task<bool> UpdateQuestion(int id, Questions question)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "UPDATE perguntas SET conteudo = @conteudo WHERE id = @id";
+        string query = "UPDATE perguntas SET conteudo = @Content WHERE id = @Id";
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@id", id);
-          command.Parameters.AddWithValue("@conteudo", question.Content);
+          command.Parameters.AddWithValue("@Id", id);
+          command.Parameters.AddWithValue("@Content", question.Content);
 
           try
           {
@@ -156,17 +156,17 @@ namespace NpsApi.Repositories
 
     public async Task<List<Questions>> GetQuestionsByFormId(int formId)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "SELECT * FROM perguntas WHERE idFormulario = @idFormulario";
+        string query = "SELECT * FROM perguntas WHERE idFormulario = @FormId";
 
         List<Questions> questionsList = new List<Questions>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
-          command.Parameters.AddWithValue("@idFormulario", formId);
+          command.Parameters.AddWithValue("@FormId", formId);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
