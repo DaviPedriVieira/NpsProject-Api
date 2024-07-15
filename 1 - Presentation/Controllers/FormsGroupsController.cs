@@ -18,27 +18,27 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<FormsGroups>> Get()
+    public async Task<ActionResult<FormsGroup>> Get()
     {
-      List<FormsGroups> group = await _groupFormsService.GetGroups();
+      List<FormsGroup> group = await _groupFormsService.GetGroups();
 
       return Ok(group);
     }
 
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<ActionResult<FormsGroups>> GetById(int id)
+    public async Task<ActionResult<FormsGroup>> GetById(int id)
     {
-      FormsGroups group = await _groupFormsService.GetGroupById(id);
+      FormsGroup group = await _groupFormsService.GetGroupById(id);
 
       return Ok(group);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
-    public async Task<ActionResult<FormsGroups>> Create(FormsGroups group)
+    public async Task<ActionResult<FormsGroup>> Create(FormsGroup group)
     {
-      FormsGroups createdGroup = await _groupFormsService.CreateGroup(group);
+      FormsGroup createdGroup = await _groupFormsService.CreateGroup(group);
 
       return Ok(createdGroup);
     }
@@ -54,7 +54,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<string>> Update(int id, FormsGroups group)
+    public async Task<ActionResult<string>> Update(int id, FormsGroup group)
     {
       string message = await _groupFormsService.UpdateGroup(id, group);
 

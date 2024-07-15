@@ -14,7 +14,7 @@ namespace NpsApi.Repositories
       _databaseConnection = connection;
     }
 
-    public async Task<Forms> CreateForm(Forms form)
+    public async Task<Form> CreateForm(Form form)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -35,7 +35,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<Forms?> GetFormById(int id)
+    public async Task<Form?> GetFormById(int id)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -51,12 +51,12 @@ namespace NpsApi.Repositories
           {
             if (await reader.ReadAsync())
             {
-              Forms form = new Forms
+              Form form = new Form
               {
                 Id = reader.GetInt32("id"),
                 GroupId = reader.GetInt32("idGrupo"),
                 Name = reader.GetString("nome"),
-                Questions = new List<Questions>(),
+                Questions = new List<Question>(),
               };
 
               return form;
@@ -70,7 +70,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Forms>> GetForms()
+    public async Task<List<Form>> GetForms()
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -78,7 +78,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM formularios";
 
-        List<Forms> allForms = new List<Forms>();
+        List<Form> allForms = new List<Form>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -86,12 +86,12 @@ namespace NpsApi.Repositories
           {
             while (await reader.ReadAsync())
             {
-              Forms form = new Forms
+              Form form = new Form
               {
                 Id = reader.GetInt32("id"),
                 GroupId = reader.GetInt32("idGrupo"),
                 Name = reader.GetString("nome"),
-                Questions = new List<Questions>(),
+                Questions = new List<Question>(),
               };
 
               allForms.Add(form);
@@ -115,12 +115,11 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          try
+          if (await command.ExecuteNonQueryAsync() > 0)
           {
-            await command.ExecuteNonQueryAsync();
             return true;
           }
-          catch (SqlException)
+          else
           {
             return false;
           }
@@ -128,7 +127,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> UpdateForm(int id, Forms form)
+    public async Task<bool> UpdateForm(int id, Form form)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -141,12 +140,11 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Id", id);
           command.Parameters.AddWithValue("@Name", form.Name);
 
-          try
+          if (await command.ExecuteNonQueryAsync() > 0)
           {
-            await command.ExecuteNonQueryAsync();
             return true;
           }
-          catch (SqlException)
+          else
           {
             return false;
           }
@@ -154,7 +152,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Forms>> GetFormsByGroupId(int groupId)
+    public async Task<List<Form>> GetFormsByGroupId(int groupId)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -162,7 +160,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM formularios WHERE idGrupo = @GroupId";
 
-        List<Forms> formsList = new List<Forms>();
+        List<Form> formsList = new List<Form>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -172,11 +170,11 @@ namespace NpsApi.Repositories
           {
             while (await reader.ReadAsync())
             {
-              Forms form = new Forms
+              Form form = new Form
               {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
-                Questions = new List<Questions>(),
+                Questions = new List<Question>(),
               };
 
               formsList.Add(form);

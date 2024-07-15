@@ -21,18 +21,18 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Users>> Create(Users user)
+    public async Task<ActionResult<User>> Create(User user)
     {
-      Users createdUser = await _usersService.CreateUser(user);
+      User createdUser = await _usersService.CreateUser(user);
 
       return Ok(createdUser);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet]
-    public async Task<ActionResult<Users>> Get()
+    public async Task<ActionResult<User>> Get()
     {
-      List<Users> users = await _usersService.GetUsers();
+      List<User> users = await _usersService.GetUsers();
 
       return Ok(users);
     }
@@ -40,8 +40,8 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost("/login")]
     public async Task<ActionResult> Login(string name, string password)
     {
-      List<Users> usersList = await _usersService.GetUsers();
-      Users? user = usersList.Find(user => user.Name == name && user.Password == password);
+      List<User> usersList = await _usersService.GetUsers();
+      User? user = usersList.Find(user => user.Name == name && user.Password == password);
 
       if (user == null)
       {
@@ -51,10 +51,10 @@ namespace NpsApi.Presentation.Controllers
       List<Claim> claims = new List<Claim> {
          new Claim(ClaimTypes.Name, user.Name),
          new Claim(ClaimTypes.Role, user.Type.ToString())
-      };
+      };                                                                        
 
-      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-      ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme); // Identity: Identificações da pessoa, por ex documentos
+      ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity); // Principal: Pessoa em si
 
       await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 

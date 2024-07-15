@@ -12,26 +12,21 @@ namespace NpsApi.Application.Services
       _answersRepository = answersRepository;
     }
 
-    public async Task<Answers> SubmitAnswer(Answers answer)
+    public async Task<Answer> SubmitAnswer(Answer answer)
     {
       if (answer.Grade < 0 || answer.Grade > 10)
       {
         throw new ArgumentException("Nota inválida!");
       }
 
-      Answers newAnswer = await _answersRepository.SubmitAnswer(answer);
+      Answer newAnswer = await _answersRepository.SubmitAnswer(answer);
 
       return newAnswer;
     }
 
-    public async Task<List<Answers>> GetAnswersByClientId(int userId)
+    public async Task<List<Answer>> GetAnswersByClientId(int userId)
     {
-      if (userId <= 0)
-      {
-        throw new ArgumentException("O id do usuário não pode ser menor ou igual a zero!");
-      }
-
-      List<Answers> answers = await _answersRepository.GetAnswersByClientId(userId);
+      List<Answer> answers = await _answersRepository.GetAnswersByClientId(userId);
 
       if (!answers.Any())
       {
@@ -41,9 +36,9 @@ namespace NpsApi.Application.Services
       return answers;
     }
 
-    public async Task<List<Answers>> GetAnswers()
+    public async Task<List<Answer>> GetAnswers()
     {
-      List<Answers> answersList = await _answersRepository.GetAnswers();
+      List<Answer> answersList = await _answersRepository.GetAnswers();
 
       if (!answersList.Any())
       {
@@ -55,11 +50,6 @@ namespace NpsApi.Application.Services
 
     public async Task<string> DeleteAnswer(int id)
     {
-      if (id <= 0)
-      {
-        throw new ArgumentException("O id não pode ser menor ou igual a zero!");
-      }
-
       bool deleted = await _answersRepository.DeleteAnswer(id);
 
       if (!deleted)

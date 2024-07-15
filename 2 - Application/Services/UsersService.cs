@@ -1,7 +1,6 @@
 using NpsApi._3___Domain.Enums;
 using NpsApi.Models;
 using NpsApi.Repositories;
-using System.Reflection.PortableExecutable;
 
 namespace NpsApi.Application.Services
 {
@@ -14,7 +13,7 @@ namespace NpsApi.Application.Services
       _userRepository = userRepository;
     }
 
-    public async Task<Users> CreateUser(Users user)
+    public async Task<User> CreateUser(User user)
     {
       if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Password))
       {
@@ -26,22 +25,22 @@ namespace NpsApi.Application.Services
         throw new ArgumentException("Tipo inexistente!");
       }
 
-      List<Users> users = await GetUsers();
-      Users? repeatedNameUser = users.FirstOrDefault(User => User.Name == user.Name);
+      List<User> users = await GetUsers();
+      User? repeatedNameUser = users.FirstOrDefault(User => User.Name == user.Name);
 
       if(repeatedNameUser != null)
       {
         throw new ArgumentException("Nome de usuário já existente!");
       }
 
-      Users newUser = await _userRepository.CreateUser(user);
+      User newUser = await _userRepository.CreateUser(user);
 
       return newUser;
     }
 
-    public async Task<List<Users>> GetUsers()
+    public async Task<List<User>> GetUsers()
     {
-      List<Users> usersList = await _userRepository.GetUsers();
+      List<User> usersList = await _userRepository.GetUsers();
 
       if (!usersList.Any())
       {

@@ -3,7 +3,6 @@ using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
 using NpsApi._3___Domain.Enums;
-using Microsoft.OpenApi.Extensions;
 
 namespace NpsApi.Repositories
 {
@@ -16,7 +15,7 @@ namespace NpsApi.Repositories
       _connection = connection;
     }
 
-    public async Task<Users> CreateUser(Users user)
+    public async Task<User> CreateUser(User user)
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -38,7 +37,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Users>> GetUsers()
+    public async Task<List<User>> GetUsers()
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -46,7 +45,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM usuarios";
 
-        List<Users> allUsers = new List<Users>();
+        List<User> users = new List<User>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -54,7 +53,7 @@ namespace NpsApi.Repositories
           {
             while (await reader.ReadAsync())
             {
-              Users user = new Users
+              User user = new User
               {
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
@@ -62,11 +61,11 @@ namespace NpsApi.Repositories
                 Type = Enum.Parse<UserType>(reader.GetString("tipo")),
               };
 
-              allUsers.Add(user);
+              users.Add(user);
             }
           }
         }
-        return allUsers;
+        return users;
       }
     }
   }

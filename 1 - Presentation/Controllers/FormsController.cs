@@ -18,34 +18,34 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<Forms>> Get()
+    public async Task<ActionResult<Form>> Get()
     {
-      List<Forms> group = await _formsService.GetForms();
+      List<Form> group = await _formsService.GetForms();
 
       return Ok(group);
     }
 
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Forms>> GetById(int id)
+    public async Task<ActionResult<Form>> GetById(int id)
     {
-      Forms form = await _formsService.GetFormById(id);
+      Form form = await _formsService.GetFormById(id);
 
       return Ok(form);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
-    public async Task<ActionResult<Forms>> Create(Forms form)
+    public async Task<ActionResult<Form>> Create(Form form)
     {
-      Forms createdForm = await _formsService.CreateForm(form);
+      Form createdForm = await _formsService.CreateForm(form);
 
       return Ok(createdForm);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Forms>> Delete(int id)
+    public async Task<ActionResult<Form>> Delete(int id)
     {
       string message = await _formsService.DeleteForm(id);
 
@@ -54,7 +54,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<FormsGroups>> Update(int id, Forms form)
+    public async Task<ActionResult<FormsGroup>> Update(int id, Form form)
     {
       string message = await _formsService.UpdateForm(id, form);
 

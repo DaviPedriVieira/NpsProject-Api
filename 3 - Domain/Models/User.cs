@@ -2,7 +2,7 @@ using NpsApi._3___Domain.Enums;
 
 namespace NpsApi.Models
 {
-  public class Users
+  public class User
   {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

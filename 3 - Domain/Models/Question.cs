@@ -1,15 +1,15 @@
 namespace NpsApi.Models
 {
-  public class Questions
+  public class Question
   {
     public int Id { get; set; }
     public int FormId { get; set; }
     public string Content { get; set; } = string.Empty;
-    public ICollection<Answers> Answers { get; set; }
+    public ICollection<Answer> Answers { get; set; }
 
-    public Questions()
+    public Question()
     {
-     Answers = new List<Answers>();
+     Answers = new List<Answer>();
     }
   }
 }

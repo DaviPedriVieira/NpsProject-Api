@@ -18,34 +18,34 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize]
     [HttpGet]
-    public async Task<ActionResult<Questions>> Get()
+    public async Task<ActionResult<Question>> Get()
     {
-      List<Questions> group = await _questionsService.GetQuestions();
+      List<Question> group = await _questionsService.GetQuestions();
 
       return Ok(group);
     }
 
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Questions>> GetById(int id)
+    public async Task<ActionResult<Question>> GetById(int id)
     {
-      Questions question = await _questionsService.GetQuestionById(id);
+      Question question = await _questionsService.GetQuestionById(id);
 
       return Ok(question);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
-    public async Task<ActionResult<Questions>> Create(Questions question)
+    public async Task<ActionResult<Question>> Create(Question question)
     {
-      Questions createdQuestion = await _questionsService.Create(question);
+      Question createdQuestion = await _questionsService.Create(question);
 
       return Ok(createdQuestion);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Questions>> Delete(int id)
+    public async Task<ActionResult<Question>> Delete(int id)
     {
       string message = await _questionsService.DeleteQuestion(id);
 
@@ -54,7 +54,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<Questions>> Update(int id, Questions question)
+    public async Task<ActionResult<Question>> Update(int id, Question question)
     {
       string message = await _questionsService.UpdateQuestion(id, question);
 

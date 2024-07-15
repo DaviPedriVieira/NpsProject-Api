@@ -18,34 +18,34 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet]
-    public async Task<ActionResult<List<Answers>>> Get()
+    public async Task<ActionResult<List<Answer>>> Get()
     {
-      List<Answers> answersList = await _answerService.GetAnswers();
+      List<Answer> answersList = await _answerService.GetAnswers();
 
       return Ok(answersList);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{userId}")]
-    public async Task<ActionResult<List<Answers>>> GetByClientId(int userId)
+    public async Task<ActionResult<List<Answer>>> GetByClientId(int userId)
     {
-      List<Answers> answersList = await _answerService.GetAnswersByClientId(userId);
+      List<Answer> answersList = await _answerService.GetAnswersByClientId(userId);
 
       return Ok(answersList);
     }
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Answers>> SubmitAnswer(Answers answer)
+    public async Task<ActionResult<Answer>> SubmitAnswer(Answer answer)
     {
-      Answers newAnswer = await _answerService.SubmitAnswer(answer);
+      Answer newAnswer = await _answerService.SubmitAnswer(answer);
 
       return Ok(newAnswer);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Forms>> Delete(int id)
+    public async Task<ActionResult<Form>> Delete(int id)
     {
       string message = await _answerService.DeleteAnswer(id);
 

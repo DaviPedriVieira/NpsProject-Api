@@ -14,40 +14,33 @@ namespace NpsApi.Application.Services
       _answersRepository = answersRepository;
     }
 
-    public async Task<Questions> Create(Questions question)
+    public async Task<Question> Create(Question question)
     {
       if (string.IsNullOrWhiteSpace(question.Content))
       {
         throw new ArgumentException("A pergunta não pode ser vazia!");
       }
 
-      Questions newQuestion = await _questionsRepository.CreateQuestion(question);
+      Question newQuestion = await _questionsRepository.CreateQuestion(question);
 
       return newQuestion;
     }
 
-    public async Task<Questions> GetQuestionById(int id)
+    public async Task<Question> GetQuestionById(int id)
     {
-      if (id <= 0)
-      {
-        throw new ArgumentException("O id não pode ser menor ou igual a zero!");
-      }
-
-      Questions? question = await _questionsRepository.GetQuestionById(id);
+      Question? question = await _questionsRepository.GetQuestionById(id);
 
       if (question == null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
-      question.Answers = await _answersRepository.GetAnswersByQuestionId(question.Id);
-
       return question;
     }
 
-    public async Task<List<Questions>> GetQuestions()
+    public async Task<List<Question>> GetQuestions()
     {
-      List<Questions> questionsList = await _questionsRepository.GetQuestions();
+      List<Question> questionsList = await _questionsRepository.GetQuestions();
 
       if (!questionsList.Any())
       {
@@ -59,8 +52,7 @@ namespace NpsApi.Application.Services
 
     public async Task<string> DeleteQuestion(int id)
     {
-      List<Answers> answersList = await _answersRepository.GetAnswersByQuestionId(id);
-      answersList.ForEach(async answer => await _answersRepository.DeleteAnswer(answer.Id));
+      await _answersRepository.DeleteAnswersByQuestionId(id);
 
       bool deleted = await _questionsRepository.DeleteQuestion(id);
 
@@ -72,16 +64,16 @@ namespace NpsApi.Application.Services
       return "Pergunta excluída!";
     }
 
-    public async Task<string> UpdateQuestion(int id, Questions question)
+    public async Task<string> UpdateQuestion(int id, Question question)
     {
       if (string.IsNullOrWhiteSpace(question.Content))
       {
         throw new ArgumentException("O nome não pode ser vazio!");
       }
 
-      if (id <= 0 || question.FormId <= 0)
+      if (question.FormId <= 0)
       {
-        throw new ArgumentException("O Id e Id do formulário não podem ser menores ou iguais a zero!");
+        throw new ArgumentException("Id do formulário inválido!");
       }
 
       bool edited = await _questionsRepository.DeleteQuestion(id);

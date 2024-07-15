@@ -14,7 +14,7 @@ namespace NpsApi.Repositories
       _connection = connection;
     }
 
-    public async Task<Questions> CreateQuestion(Questions question)
+    public async Task<Question> CreateQuestion(Question question)
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -35,7 +35,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<Questions?> GetQuestionById(int id)
+    public async Task<Question?> GetQuestionById(int id)
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -51,12 +51,12 @@ namespace NpsApi.Repositories
           {
             if (await reader.ReadAsync())
             {
-              Questions question = new Questions
+              Question question = new Question
               {
                 Id = reader.GetInt32("id"),
                 FormId = reader.GetInt32("idFormulario"),
                 Content = reader.GetString("conteudo"),
-                Answers = new List<Answers>(),
+                Answers = new List<Answer>(),
               };
 
               return question;
@@ -70,7 +70,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Questions>> GetQuestions()
+    public async Task<List<Question>> GetQuestions()
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -78,7 +78,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM perguntas";
 
-        List<Questions> allQuestions = new List<Questions>();
+        List<Question> questions = new List<Question>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -86,20 +86,20 @@ namespace NpsApi.Repositories
           {
             while (await reader.ReadAsync())
             {
-              Questions question = new Questions
+              Question question = new Question
               {
                 Id = reader.GetInt32("id"),
                 FormId = reader.GetInt32("idFormulario"),
                 Content = reader.GetString("conteudo"),
-                Answers = new List<Answers>(),
+                Answers = new List<Answer>(),
               };
 
-              allQuestions.Add(question);
+              questions.Add(question);
             }
           }
         }
 
-        return allQuestions;
+        return questions;
       }
     }
 
@@ -115,12 +115,11 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          try
+          if (await command.ExecuteNonQueryAsync() > 0)
           {
-            await command.ExecuteNonQueryAsync();
             return true;
           }
-          catch (SqlException)
+          else
           {
             return false;
           }
@@ -128,7 +127,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> UpdateQuestion(int id, Questions question)
+    public async Task<bool> UpdateQuestion(int id, Question question)
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -141,12 +140,11 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Id", id);
           command.Parameters.AddWithValue("@Content", question.Content);
 
-          try
+          if (await command.ExecuteNonQueryAsync() > 0)
           {
-            await command.ExecuteNonQueryAsync();
             return true;
           }
-          catch (SqlException)
+          else
           {
             return false;
           }
@@ -154,7 +152,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Questions>> GetQuestionsByFormId(int formId)
+    public async Task<List<Question>> GetQuestionsByFormId(int formId)
     {
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -162,7 +160,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM perguntas WHERE idFormulario = @FormId";
 
-        List<Questions> questionsList = new List<Questions>();
+        List<Question> questionsList = new List<Question>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -172,12 +170,12 @@ namespace NpsApi.Repositories
           {
             while (await reader.ReadAsync())
             {
-              Questions question = new Questions
+              Question question = new Question
               {
                 Id = reader.GetInt32("id"),
                 FormId = reader.GetInt32("idFormulario"),
                 Content = reader.GetString("conteudo"),
-                Answers = new List<Answers>(),
+                Answers = new List<Answer>(),
               };
 
               questionsList.Add(question);

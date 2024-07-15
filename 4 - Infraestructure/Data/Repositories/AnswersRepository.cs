@@ -14,13 +14,13 @@ namespace NpsApi.Repositories
       _connection = connection;
     }
 
-    public async Task<Answers> SubmitAnswer(Answers answer)
+    public async Task<Answer> SubmitAnswer(Answer answer)
     {
       using(SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
-        string query = "INSERT INTO respostas (idPergunta, idUsuario, resposta, descricao) VALUES (@QuestionId, @UserId, @Grade, @Notes); SELECT SCOPE_IDENTITY();";
+        string query = "INSERT INTO respostas (idPergunta, idUsuario, resposta, descricao, dataHora) VALUES (@QuestionId, @UserId, @Grade, @Notes, @Date); SELECT SCOPE_IDENTITY();";
 
         using(SqlCommand command = new SqlCommand (query, connection))
         {
@@ -28,6 +28,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@UserId", answer.UserId);
           command.Parameters.AddWithValue("@Grade", answer.Grade);
           command.Parameters.AddWithValue("@Notes", answer.Notes);
+          command.Parameters.AddWithValue("@Date", DateTime.Now);
 
           var id = await command.ExecuteScalarAsync();
           answer.Id = Convert.ToInt32(id);
@@ -49,12 +50,11 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          try
+          if (await command.ExecuteNonQueryAsync() > 0)
           {
-            await command.ExecuteNonQueryAsync();
             return true;
           }
-          catch (SqlException)
+          else
           {
             return false;
           }
@@ -62,9 +62,9 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Answers>> GetAnswersByClientId(int userId)
+    public async Task<List<Answer>> GetAnswersByClientId(int userId)
     {
-      List<Answers> answersList = new List<Answers>();
+      List<Answer> answersList = new List<Answer>();
 
       using (SqlConnection connection = _connection.GetConnectionString())
       {
@@ -80,13 +80,14 @@ namespace NpsApi.Repositories
           {
             while (await reader.ReadAsync())
             {
-              Answers answer = new Answers
+              Answer answer = new Answer
               {
                 Id = reader.GetInt32("id"),
                 QuestionId = reader.GetInt32("idPergunta"),
                 UserId = reader.GetInt32("idUsuario"),
                 Grade = reader.GetInt32("resposta"),
-                Notes = reader.GetString("descricao")
+                Notes = reader.GetString("descricao"),
+                Date = reader.GetDateTime("dataHora")
               };
 
               answersList.Add(answer);
@@ -98,7 +99,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<Answers>> GetAnswers()
+    public async Task<List<Answer>> GetAnswers()
     {
       using(SqlConnection connection = _connection.GetConnectionString())
       {
@@ -106,7 +107,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM  respostas";
 
-        List<Answers> answersList = new List<Answers>();
+        List<Answer> answersList = new List<Answer>();
 
         using(SqlCommand command = new SqlCommand(query, connection))
         {
@@ -114,57 +115,48 @@ namespace NpsApi.Repositories
           {
             while(await reader.ReadAsync())
             {
-              Answers answer = new Answers
-              {
-                Id = reader.GetInt32("id"),
-                QuestionId = reader.GetInt32("idPergunta"),
-                UserId = reader.GetInt32("idUsuario"),
-                Grade = reader.GetInt32("resposta"),
-                Notes = reader.GetString("descricao")
-              };
-
-              answersList.Add(answer);
-            }
-          }
-        }
-
-        return answersList;
-      }
-    }
-
-    public async Task<List<Answers>> GetAnswersByQuestionId(int questionId)
-    {
-      using (SqlConnection connection = _connection.GetConnectionString())
-      {
-        await connection.OpenAsync();
-
-        string query = "SELECT * FROM respostas WHERE idPergunta = @QuestionId";
-
-        List<Answers> answersList = new List<Answers>();
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-          command.Parameters.AddWithValue("@QuestionId", questionId);
-
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
-          {
-            while (await reader.ReadAsync())
-            {
-              Answers answer = new Answers
+              Answer answer = new Answer
               {
                 Id = reader.GetInt32("id"),
                 QuestionId = reader.GetInt32("idPergunta"),
                 UserId = reader.GetInt32("idUsuario"),
                 Grade = reader.GetInt32("resposta"),
                 Notes = reader.GetString("descricao"),
+                Date = reader.GetDateTime("dataHora")
               };
 
               answersList.Add(answer);
             }
           }
         }
-
+        
         return answersList;
+      }
+    }
+
+    public async Task<bool> DeleteAnswersByQuestionId(int questionId)
+    {
+      using (SqlConnection connection = _connection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "DELETE * FROM respostas WHERE idPergunta = @QuestionId";
+
+        List<Answer> answersList = new List<Answer>();
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@QuestionId", questionId);
+
+          if (await command.ExecuteNonQueryAsync() > 0)
+          {
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
       }
     }
   }
