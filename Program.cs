@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using NpsApi._3___Domain.CommandHandlers;
 using NpsApi.Application.Services;
 using NpsApi.Data;
 using NpsApi.Repositories;
@@ -17,6 +18,7 @@ builder.Services.AddSingleton(new DataBaseConnection(connectionString));
 
 builder.Services.AddScoped<FormsGroupsService>();
 builder.Services.AddScoped<FormsGroupsRepository>();
+builder.Services.AddScoped<FormsGroupsCommandHandler>();
 
 builder.Services.AddScoped<FormsService>();
 builder.Services.AddScoped<FormsRepository>();

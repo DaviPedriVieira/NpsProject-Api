@@ -34,7 +34,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<FormsGroup?> GetGroupById(int id)
+    public async Task<FormsGroup> GetGroupById(int id)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -48,21 +48,14 @@ namespace NpsApi.Repositories
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
-            if (await reader.ReadAsync())
+            FormsGroup group = new FormsGroup
             {
-              FormsGroup group = new FormsGroup
-              {
-                Id = reader.GetInt32("id"),
-                Name = reader.GetString("nome"),
-                Forms = new List<Form>(),
-              };
+              Id = reader.GetInt32("id"),
+              Name = reader.GetString("nome"),
+              Forms = new List<Form>(),
+            };
 
-              return group;
-            }
-            else
-            {
-              return null;
-            }
+            return group;
           }
         }
       }
@@ -112,14 +105,7 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }
@@ -137,14 +123,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Id", id);
           command.Parameters.AddWithValue("@Name", group.Name);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }
