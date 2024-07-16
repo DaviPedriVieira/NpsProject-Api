@@ -68,5 +68,39 @@ namespace NpsApi.Repositories
         return users;
       }
     }
+
+    public async Task<User?> GetUserById(int id)
+    {
+      using (SqlConnection connection = _connection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "SELECT * FROM usuarios WHERE id = @Id";
+
+        User? user = null;
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@Id", id);
+
+          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          {
+            if (await reader.ReadAsync())
+            {
+              user = new User
+              {
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("nome"),
+                Password = reader.GetString("senha"),
+                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
+              };
+            }
+
+            return user;
+          }
+        }
+      }
+    }
+
   }
 }

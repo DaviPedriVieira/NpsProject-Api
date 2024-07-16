@@ -54,7 +54,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<string>> Update(int id, FormsGroup group)
+    public async Task<ActionResult<bool>> Update(int id, FormsGroup group)
     {
       bool updated = await _groupFormsService.UpdateGroup(id, group);
 

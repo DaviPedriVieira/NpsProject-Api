@@ -26,12 +26,21 @@ namespace NpsApi.Presentation.Controllers
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpGet("{userId}")]
+    [HttpGet("api/[controller]/User/{userId}")]
     public async Task<ActionResult<List<Answer>>> GetByClientId(int userId)
     {
       List<Answer> answersList = await _answerService.GetAnswersByClientId(userId);
 
       return Ok(answersList);
+    }
+
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Answer>> GetById(int id)
+    {
+      Answer answer = await _answerService.GetAnswerById(id);
+
+      return Ok(answer);
     }
 
     [Authorize]
@@ -41,15 +50,6 @@ namespace NpsApi.Presentation.Controllers
       Answer newAnswer = await _answerService.SubmitAnswer(answer);
 
       return Ok(newAnswer);
-    }
-
-    [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<Form>> Delete(int id)
-    {
-      string message = await _answerService.DeleteAnswer(id);
-
-      return Ok(message);
     }
   }
 }

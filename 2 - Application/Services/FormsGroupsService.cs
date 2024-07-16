@@ -14,42 +14,27 @@ namespace NpsApi.Application.Services
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {
-      if (string.IsNullOrWhiteSpace(group.Name))
-      {
-        throw new ArgumentException("O nome não pode ser vazio!");
-      }
-
-      FormsGroup newGroup = await _formsGroupsCommandHandler.CreateGroup(group);
-
-      return newGroup;
+      return await _formsGroupsCommandHandler.CreateGroup(group);
     }
 
     public async Task<FormsGroup> GetGroupById(int id)
     {
-      FormsGroup group = await _formsGroupsCommandHandler.GetGroupById(id);
-
-      return group;
+      return await _formsGroupsCommandHandler.GetGroupById(id);
     }
 
     public async Task<List<FormsGroup>> GetGroups()
     {
-      List<FormsGroup> groupsList = await _formsGroupsCommandHandler.GetGroups();
-
-      return groupsList;
+      return await _formsGroupsCommandHandler.GetGroups();
     }
 
     public async Task<bool> DeleteGroup(int id)
     {
-      bool deleted = await _formsGroupsCommandHandler.DeleteGroup(id);
-
-      return deleted;
+      return await _formsGroupsCommandHandler.DeleteGroup(id);
     }
 
     public async Task<bool> UpdateGroup(int id, FormsGroup group)
     {
-      bool updated = await _formsGroupsCommandHandler.UpdateGroup(id, group);
-
-      return updated;
+      return await _formsGroupsCommandHandler.UpdateGroup(id, group);
     }
 
   }

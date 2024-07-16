@@ -38,30 +38,6 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> DeleteAnswer(int id)
-    {
-      using (SqlConnection connection = _connection.GetConnectionString())
-      {
-        await connection.OpenAsync();
-
-        string query = "DELETE FROM respostas WHERE id = @Id";
-
-        using (SqlCommand command = new SqlCommand(query, connection))
-        {
-          command.Parameters.AddWithValue("@Id", id);
-
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
-        }
-      }
-    }
-
     public async Task<List<Answer>> GetAnswersByClientId(int userId)
     {
       List<Answer> answersList = new List<Answer>();
@@ -131,6 +107,41 @@ namespace NpsApi.Repositories
         }
         
         return answersList;
+      }
+    }
+
+    public async Task<Answer?> GetAnswerById(int id)
+    {
+      using (SqlConnection connection = _connection.GetConnectionString())
+      {
+        await connection.OpenAsync();
+
+        string query = "SELECT * FROM respostas WHERE id = @Id";
+
+        Answer? answer = null;
+
+        using (SqlCommand command = new SqlCommand(query, connection))
+        {
+          command.Parameters.AddWithValue("@Id", id);
+
+          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          {
+            if (await reader.ReadAsync())
+            {
+              answer = new Answer
+              {
+                Id = reader.GetInt32("id"),
+                QuestionId = reader.GetInt32("idPergunta"),
+                UserId = reader.GetInt32("idUsuario"),
+                Grade = reader.GetInt32("resposta"),
+                Notes = reader.GetString("descricao"),
+                Date = reader.GetDateTime("dataHora")
+              };
+            }
+
+            return answer;
+          }
+        }
       }
     }
 

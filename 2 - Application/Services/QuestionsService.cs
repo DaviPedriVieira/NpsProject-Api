@@ -1,89 +1,40 @@
+using NpsApi._3___Domain.CommandHandlers;
 using NpsApi.Models;
-using NpsApi.Repositories;
 
 namespace NpsApi.Application.Services
 {
   public class QuestionsService
   {
-    private readonly QuestionsRepository _questionsRepository;
-    private readonly AnswersRepository _answersRepository;
+    private readonly QuestionsCommandHandler _questionsCommandHandler;
 
-    public QuestionsService(QuestionsRepository repository, AnswersRepository answersRepository)
+    public QuestionsService(QuestionsCommandHandler questionsCommandHandler)
     {
-      _questionsRepository = repository;
-      _answersRepository = answersRepository;
+      _questionsCommandHandler = questionsCommandHandler;
     }
 
     public async Task<Question> Create(Question question)
     {
-      if (string.IsNullOrWhiteSpace(question.Content))
-      {
-        throw new ArgumentException("A pergunta não pode ser vazia!");
-      }
-
-      Question newQuestion = await _questionsRepository.CreateQuestion(question);
-
-      return newQuestion;
+      return await _questionsCommandHandler.CreateQuestion(question);
     }
 
     public async Task<Question> GetQuestionById(int id)
     {
-      Question? question = await _questionsRepository.GetQuestionById(id);
-
-      if (question == null)
-      {
-        throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
-      }
-
-      return question;
+      return await _questionsCommandHandler.GetQuestionById(id);
     }
 
     public async Task<List<Question>> GetQuestions()
     {
-      List<Question> questionsList = await _questionsRepository.GetQuestions();
-
-      if (!questionsList.Any())
-      {
-        throw new ArgumentException("Não há perguntas cadastradas!");
-      }
-
-      return questionsList;
+      return await _questionsCommandHandler.GetQuestions();
     }
 
-    public async Task<string> DeleteQuestion(int id)
+    public async Task<bool> DeleteQuestion(int id)
     {
-      await _answersRepository.DeleteAnswersByQuestionId(id);
-
-      bool deleted = await _questionsRepository.DeleteQuestion(id);
-
-      if (!deleted)
-      {
-        return "Não foi possível excluir a pergunta!";
-      }
-
-      return "Pergunta excluída!";
+      return await _questionsCommandHandler.DeleteQuestion(id);
     }
 
-    public async Task<string> UpdateQuestion(int id, Question question)
+    public async Task<bool> UpdateQuestion(int id, Question question)
     {
-      if (string.IsNullOrWhiteSpace(question.Content))
-      {
-        throw new ArgumentException("O nome não pode ser vazio!");
-      }
-
-      if (question.FormId <= 0)
-      {
-        throw new ArgumentException("Id do formulário inválido!");
-      }
-
-      bool edited = await _questionsRepository.DeleteQuestion(id);
-
-      if (!edited)
-      {
-        return "Não foi possível editar a pergunta!";
-      }
-
-      return "Pergunta editada!";
+      return await _questionsCommandHandler.UpdateQuestion(id, question);
     }
   }
 }

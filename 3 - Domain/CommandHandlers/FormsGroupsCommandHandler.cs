@@ -22,24 +22,20 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       if (string.IsNullOrWhiteSpace(group.Name))
       {
-        throw new ArgumentException("O nome não pode ser vazio!");
+        throw new ArgumentNullException("group.Name", "O nome não pode ser vazio!");
       }
 
-      FormsGroup newGroup = await _formsGroupsRepository.CreateGroup(group);
-
-      return newGroup;
+      return await _formsGroupsRepository.CreateGroup(group);
     }
 
     public async Task<FormsGroup> GetGroupById(int id)
     {
-      List<FormsGroup> groupsList = await _formsGroupsRepository.GetGroups();
+      FormsGroup? group = await _formsGroupsRepository.GetGroupById(id);
 
-      if (groupsList.Find(group => group.Id == id) == null)
+      if (group == null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum grupo com o Id = {id}!");
+        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}");
       }
-
-      FormsGroup group = await _formsGroupsRepository.GetGroupById(id);
 
       group.Forms = await _formsRepository.GetFormsByGroupId(group.Id);
 
@@ -57,7 +53,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (!groupsList.Any())
       {
-        throw new ArgumentException("Não há grupos cadastrados!");
+        throw new Exception("Não há grupos cadastrados!");
       }
 
       return groupsList;
@@ -65,11 +61,11 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<bool> DeleteGroup(int id)
     {
-      List<FormsGroup> groupsList = await _formsGroupsRepository.GetGroups();
+      FormsGroup? group = await _formsGroupsRepository.GetGroupById(id);
 
-      if (groupsList.Find(group => group.Id == id) == null)
+      if (group == null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum grupo com o Id = {id}!");
+        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}");
       }
 
       List<Form> formsInsideGroup = await _formsRepository.GetFormsByGroupId(id);
@@ -88,28 +84,24 @@ namespace NpsApi._3___Domain.CommandHandlers
         await _formsRepository.DeleteForm(form.Id);
       }
 
-      bool deleted = await _formsGroupsRepository.DeleteGroup(id);
-
-      return deleted;
+      return await _formsGroupsRepository.DeleteGroup(id);
     }
 
     public async Task<bool> UpdateGroup(int id, FormsGroup group)
     {
-      List<FormsGroup> groupsList = await _formsGroupsRepository.GetGroups();
+      FormsGroup? toUpdateGroup = await _formsGroupsRepository.GetGroupById(id);
 
-      if (groupsList.Find(group => group.Id == id) == null)
+      if (toUpdateGroup == null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum grupo com o Id = {id}!");
+        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}");
       }
 
       if (string.IsNullOrWhiteSpace(group.Name))
       {
-        throw new ArgumentException("O nome não pode ser vazio!");
+        throw new ArgumentNullException("group.Name", "O nome não pode ser vazio!");
       }
 
-      bool updated = await _formsGroupsRepository.UpdateGroup(id, group);
-
-      return updated;
+      return await _formsGroupsRepository.UpdateGroup(id, group);
     }
   }
 }

@@ -47,18 +47,18 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete("{id}")]
     public async Task<ActionResult<Form>> Delete(int id)
     {
-      string message = await _formsService.DeleteForm(id);
+      bool deleted = await _formsService.DeleteForm(id);
 
-      return Ok(message);
+      return Ok(deleted);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
     public async Task<ActionResult<FormsGroup>> Update(int id, Form form)
     {
-      string message = await _formsService.UpdateForm(id, form);
+      bool updated = await _formsService.UpdateForm(id, form);
 
-      return Ok(message);
+      return Ok(updated);
     }
   }
 }

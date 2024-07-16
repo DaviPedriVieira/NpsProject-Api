@@ -43,28 +43,26 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM formularios WHERE id = @Id";
 
+        Form? form = null;
+
         using (SqlCommand command = new SqlCommand(query, connection))
         {
           command.Parameters.AddWithValue("@Id", id);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
-            if (await reader.ReadAsync())
+            if(await reader.ReadAsync())
             {
-              Form form = new Form
+              form = new Form
               {
                 Id = reader.GetInt32("id"),
                 GroupId = reader.GetInt32("idGrupo"),
                 Name = reader.GetString("nome"),
                 Questions = new List<Question>(),
               };
+            }
 
-              return form;
-            }
-            else
-            {
-              return null;
-            }
+            return form;
           }
         }
       }
@@ -115,14 +113,7 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }
@@ -140,14 +131,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Id", id);
           command.Parameters.AddWithValue("@Name", form.Name);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }

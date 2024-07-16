@@ -34,7 +34,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<FormsGroup> GetGroupById(int id)
+    public async Task<FormsGroup?> GetGroupById(int id)
     {
       using (SqlConnection connection = _databaseConnection.GetConnectionString())
       {
@@ -42,18 +42,23 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM grupoFormularios WHERE id = @Id";
 
+        FormsGroup? group = null;
+
         using (SqlCommand command = new SqlCommand(query, connection))
         {
           command.Parameters.AddWithValue("@Id", id);
 
           using (SqlDataReader reader = await command.ExecuteReaderAsync())
           {
-            FormsGroup group = new FormsGroup
+            if(await reader.ReadAsync())
             {
-              Id = reader.GetInt32("id"),
-              Name = reader.GetString("nome"),
-              Forms = new List<Form>(),
-            };
+              group = new FormsGroup
+              {
+                Id = reader.GetInt32("id"),
+                Name = reader.GetString("nome"),
+                Forms = new List<Form>(),
+              };
+            }
 
             return group;
           }
@@ -127,6 +132,5 @@ namespace NpsApi.Repositories
         }
       }
     }
-
   }
 }

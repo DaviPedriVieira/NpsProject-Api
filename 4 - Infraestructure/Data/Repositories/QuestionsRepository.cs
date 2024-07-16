@@ -115,14 +115,7 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }
@@ -140,14 +133,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Id", id);
           command.Parameters.AddWithValue("@Content", question.Content);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }

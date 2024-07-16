@@ -37,6 +37,15 @@ namespace NpsApi.Presentation.Controllers
       return Ok(users);
     }
 
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<User>> Get(int id)
+    {
+      User user = await _usersService.GetUserById(id);
+
+      return Ok(user);
+    }
+
     [HttpPost("/login")]
     public async Task<ActionResult> Login(string name, string password)
     {
@@ -53,10 +62,15 @@ namespace NpsApi.Presentation.Controllers
          new Claim(ClaimTypes.Role, user.Type.ToString())
       };                                                                        
 
-      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme); // Identity: Identificações da pessoa, por ex documentos
-      ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity); // Principal: Pessoa em si
+      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-      await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+      await HttpContext.SignInAsync(
+        CookieAuthenticationDefaults.AuthenticationScheme,
+        new ClaimsPrincipal(claimsIdentity),
+        new AuthenticationProperties {
+          AllowRefresh = true,
+          IsPersistent = true,
+        });
 
       return Ok($"Login realizado!");
     }

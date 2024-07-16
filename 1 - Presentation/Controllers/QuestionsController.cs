@@ -47,18 +47,18 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete("{id}")]
     public async Task<ActionResult<Question>> Delete(int id)
     {
-      string message = await _questionsService.DeleteQuestion(id);
+      bool deleted = await _questionsService.DeleteQuestion(id);
 
-      return Ok(message);
+      return Ok(deleted);
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
     public async Task<ActionResult<Question>> Update(int id, Question question)
     {
-      string message = await _questionsService.UpdateQuestion(id, question);
+      bool updated = await _questionsService.UpdateQuestion(id, question);
 
-      return Ok(message);
+      return Ok(updated);
     }
   }
 }
