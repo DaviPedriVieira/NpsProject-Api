@@ -3,20 +3,12 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class FormsCommandHandler
+  public class FormsCommandHandler(FormsGroupsRepository formsGroupsRepository, FormsRepository repository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
   {
-    private readonly FormsGroupsRepository _formsGroupsRepository;
-    private readonly FormsRepository _formsRepository;
-    private readonly QuestionsRepository _questionsRepository;
-    private readonly AnswersRepository _answersRepository;
-
-    public FormsCommandHandler(FormsGroupsRepository formsGroupsRepository, FormsRepository repository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
-    {
-      _formsGroupsRepository = formsGroupsRepository;
-      _formsRepository = repository;
-      _questionsRepository = questionsRepository;
-      _answersRepository = answersRepository;
-    }
+    private readonly FormsGroupsRepository _formsGroupsRepository = formsGroupsRepository;
+    private readonly FormsRepository _formsRepository = repository;
+    private readonly QuestionsRepository _questionsRepository = questionsRepository;
+    private readonly AnswersRepository _answersRepository = answersRepository;
 
     public async Task<Form> CreateForm(Form form)
     {
@@ -24,7 +16,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (group == null)
       {
-        throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
+        throw new KeyNotFoundException($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
       }
 
       if (string.IsNullOrWhiteSpace(form.Name))
@@ -61,7 +53,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       List<Form> groupsList = await _formsRepository.GetForms();
 
-      if (!groupsList.Any())
+      if (groupsList.Count == 0)
       {
         throw new Exception("Não há formulários cadastrados!");
       }
@@ -103,7 +95,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (group == null)
       {
-        throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
+        throw new KeyNotFoundException($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
       }
 
       if (string.IsNullOrWhiteSpace(form.Name))

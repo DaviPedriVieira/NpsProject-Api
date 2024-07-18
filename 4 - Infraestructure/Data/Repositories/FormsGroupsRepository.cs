@@ -5,18 +5,13 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class FormsGroupsRepository
+  public class FormsGroupsRepository(DataBaseConnection connection)
   {
-    private readonly DataBaseConnection _databaseConnection;
-
-    public FormsGroupsRepository(DataBaseConnection connection)
-    {
-      _databaseConnection = connection;
-    }
+    private readonly DataBaseConnection _connection = connection;
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -26,9 +21,7 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Name", group.Name);
 
-          var id = await command.ExecuteScalarAsync();
-          group.Id = Convert.ToInt32(id);
-
+          group.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
           return group;
         }
       }
@@ -36,7 +29,7 @@ namespace NpsApi.Repositories
 
     public async Task<FormsGroup?> GetGroupById(int id)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -68,7 +61,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<FormsGroup>> GetGroups()
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -100,7 +93,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteGroup(int id)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -117,7 +110,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> UpdateGroup(int id, FormsGroup group)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 

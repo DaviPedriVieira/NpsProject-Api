@@ -3,14 +3,9 @@ using NpsApi.Models;
 
 namespace NpsApi.Application.Services
 {
-  public class FormsGroupsService
+  public class FormsGroupsService(FormsGroupsCommandHandler formsGroupsCommandHandler)
   {
-    private readonly FormsGroupsCommandHandler _formsGroupsCommandHandler;
-
-    public FormsGroupsService(FormsGroupsCommandHandler formsGroupsCommandHandler)
-    {
-      _formsGroupsCommandHandler = formsGroupsCommandHandler;
-    }
+    private readonly FormsGroupsCommandHandler _formsGroupsCommandHandler = formsGroupsCommandHandler;
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {

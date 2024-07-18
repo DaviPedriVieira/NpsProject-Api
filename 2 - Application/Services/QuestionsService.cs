@@ -3,14 +3,9 @@ using NpsApi.Models;
 
 namespace NpsApi.Application.Services
 {
-  public class QuestionsService
+  public class QuestionsService(QuestionsCommandHandler questionsCommandHandler)
   {
-    private readonly QuestionsCommandHandler _questionsCommandHandler;
-
-    public QuestionsService(QuestionsCommandHandler questionsCommandHandler)
-    {
-      _questionsCommandHandler = questionsCommandHandler;
-    }
+    private readonly QuestionsCommandHandler _questionsCommandHandler = questionsCommandHandler;
 
     public async Task<Question> Create(Question question)
     {

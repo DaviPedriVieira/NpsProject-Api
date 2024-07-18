@@ -20,45 +20,35 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<Form>> Get()
     {
-      List<Form> group = await _formsService.GetForms();
-
-      return Ok(group);
+      return Ok(await _formsService.GetForms());
     }
 
     [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<Form>> GetById(int id)
     {
-      Form form = await _formsService.GetFormById(id);
-
-      return Ok(form);
+      return Ok(await _formsService.GetFormById(id));
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
     public async Task<ActionResult<Form>> Create(Form form)
     {
-      Form createdForm = await _formsService.CreateForm(form);
-
-      return Ok(createdForm);
+      return Ok(await _formsService.CreateForm(form));
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
     public async Task<ActionResult<Form>> Delete(int id)
     {
-      bool deleted = await _formsService.DeleteForm(id);
-
-      return Ok(deleted);
+      return Ok(await _formsService.DeleteForm(id));
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
     public async Task<ActionResult<FormsGroup>> Update(int id, Form form)
     {
-      bool updated = await _formsService.UpdateForm(id, form);
-
-      return Ok(updated);
+      return Ok(await _formsService.UpdateForm(id, form));
     }
   }
 }

@@ -5,18 +5,13 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class FormsRepository
+  public class FormsRepository(DataBaseConnection connection)
   {
-    private readonly DataBaseConnection _databaseConnection;
-
-    public FormsRepository(DataBaseConnection connection)
-    {
-      _databaseConnection = connection;
-    }
+    private readonly DataBaseConnection _connection = connection;
 
     public async Task<Form> CreateForm(Form form)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -27,9 +22,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Name", form.Name);
           command.Parameters.AddWithValue("@GroupId", form.GroupId);
 
-          var id = await command.ExecuteScalarAsync();
-          form.Id = Convert.ToInt32(id);
-
+          form.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
           return form;
         }
       }
@@ -37,7 +30,7 @@ namespace NpsApi.Repositories
 
     public async Task<Form?> GetFormById(int id)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -70,7 +63,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Form>> GetForms()
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -103,7 +96,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteForm(int id)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -120,7 +113,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> UpdateForm(int id, Form form)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
@@ -138,7 +131,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Form>> GetFormsByGroupId(int groupId)
     {
-      using (SqlConnection connection = _databaseConnection.GetConnectionString())
+      using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 

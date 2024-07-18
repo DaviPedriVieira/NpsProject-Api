@@ -5,14 +5,9 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class QuestionsRepository
+  public class QuestionsRepository(DataBaseConnection connection)
   {
-    private readonly DataBaseConnection _connection;
-
-    public QuestionsRepository(DataBaseConnection connection)
-    {
-      _connection = connection;
-    }
+    private readonly DataBaseConnection _connection = connection;
 
     public async Task<Question> CreateQuestion(Question question)
     {
@@ -27,9 +22,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Content", question.Content);
           command.Parameters.AddWithValue("@FormId", question.FormId);
 
-          var id = await command.ExecuteScalarAsync();
-          question.Id = Convert.ToInt32(id);
-
+          question.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
           return question;
         }
       }
@@ -43,6 +36,8 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM perguntas WHERE id = @Id";
 
+        Question? question = null;
+
         using (SqlCommand command = new SqlCommand(query, connection))
         {
           command.Parameters.AddWithValue("@Id", id);
@@ -51,7 +46,7 @@ namespace NpsApi.Repositories
           {
             if (await reader.ReadAsync())
             {
-              Question question = new Question
+              question = new Question
               {
                 Id = reader.GetInt32("id"),
                 FormId = reader.GetInt32("idFormulario"),
@@ -59,12 +54,9 @@ namespace NpsApi.Repositories
                 Answers = new List<Answer>(),
               };
 
-              return question;
             }
-            else
-            {
-              return null;
-            }
+
+          return question;
           }
         }
       }

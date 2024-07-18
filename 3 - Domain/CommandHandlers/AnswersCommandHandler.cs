@@ -1,21 +1,13 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using NpsApi.Models;
 using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class AnswersCommandHandler
+  public class AnswersCommandHandler(AnswersRepository answersRepository, UsersRepository usersRepository, QuestionsRepository questionsRepository)
   {
-    private readonly AnswersRepository _answersRepository;
-    private readonly UsersRepository _usersRepository;
-    private readonly QuestionsRepository _questionsRepository;
-
-    public AnswersCommandHandler(AnswersRepository answersRepository, UsersRepository usersRepository, QuestionsRepository questionsRepository)
-    {
-      _answersRepository = answersRepository;
-      _usersRepository = usersRepository;
-      _questionsRepository = questionsRepository;
-    }
+    private readonly AnswersRepository _answersRepository = answersRepository;
+    private readonly UsersRepository _usersRepository = usersRepository;
+    private readonly QuestionsRepository _questionsRepository = questionsRepository;
 
     public async Task<Answer> SubmitAnswer(Answer answer)
     {
@@ -47,12 +39,12 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (user == null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum usuário com o Id = {userId}!");
+        throw new KeyNotFoundException($"Erro na FK answer.UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
       }
 
       List<Answer> answers = await _answersRepository.GetAnswersByClientId(userId);
 
-      if (!answers.Any())
+      if (answers.Count == 0)
       {
         throw new KeyNotFoundException($"Não foi encontrada nenhuma pergunta do usuário com o Id = {userId}!");
       }
@@ -76,7 +68,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       List<Answer> answersList = await _answersRepository.GetAnswers();
 
-      if (!answersList.Any())
+      if (answersList.Count == 0)
       {
         throw new Exception();
       }

@@ -3,18 +3,11 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class QuestionsCommandHandler
+  public class QuestionsCommandHandler(QuestionsRepository repository, AnswersRepository answersRepository, FormsRepository formsRepository)
   {
-    private readonly FormsRepository _formsRepository;
-    private readonly QuestionsRepository _questionsRepository;
-    private readonly AnswersRepository _answersRepository;
-
-    public QuestionsCommandHandler(QuestionsRepository repository, AnswersRepository answersRepository, FormsRepository formsRepository)
-    {
-      _questionsRepository = repository;
-      _answersRepository = answersRepository;
-      _formsRepository = formsRepository;
-    }
+    private readonly FormsRepository _formsRepository = formsRepository;
+    private readonly QuestionsRepository _questionsRepository = repository;
+    private readonly AnswersRepository _answersRepository = answersRepository;
 
     public async Task<Question> CreateQuestion(Question question)
     {
@@ -49,7 +42,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       List<Question> questionsList = await _questionsRepository.GetQuestions();
 
-      if (!questionsList.Any())
+      if (questionsList.Count == 0)
       {
         throw new Exception("Não há perguntas cadastradas!");
       }
@@ -77,14 +70,14 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (toUpdateQuestion == null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
+        throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
       Form? form = await _formsRepository.GetFormById(question.FormId);
 
       if (form == null)
       {
-        throw new KeyNotFoundException($"Erro na Fk, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
+        throw new KeyNotFoundException($"Erro na Fk question.FormId, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
       }
 
       if (string.IsNullOrWhiteSpace(question.Content))

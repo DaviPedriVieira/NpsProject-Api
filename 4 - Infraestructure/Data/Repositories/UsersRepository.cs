@@ -2,18 +2,12 @@ using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
-using NpsApi._3___Domain.Enums;
 
 namespace NpsApi.Repositories
 {
-  public class UsersRepository
+  public class UsersRepository(DataBaseConnection connection)
   {
-    private readonly DataBaseConnection _connection;
-
-    public UsersRepository(DataBaseConnection connection)
-    {
-      _connection = connection;
-    }
+    private readonly DataBaseConnection _connection = connection;
 
     public async Task<User> CreateUser(User user)
     {
@@ -29,9 +23,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Password", user.Password);
           command.Parameters.AddWithValue("@Type", user.Type.ToString());
 
-          var id = await command.ExecuteScalarAsync();
-          user.Id = Convert.ToInt32(id);
-
+          user.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
           return user;
         }
       }
@@ -58,7 +50,7 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
                 Password = reader.GetString("senha"),
-                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
+                Type = Enum.Parse<User.UserType>(reader.GetString("tipo")),
               };
 
               users.Add(user);
@@ -92,7 +84,7 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
                 Password = reader.GetString("senha"),
-                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
+                Type = Enum.Parse<User.UserType>(reader.GetString("tipo")),
               };
             }
 

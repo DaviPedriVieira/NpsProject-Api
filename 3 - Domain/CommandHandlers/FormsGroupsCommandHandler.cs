@@ -3,20 +3,12 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class FormsGroupsCommandHandler
+  public class FormsGroupsCommandHandler(FormsGroupsRepository repository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
   {
-    private readonly FormsGroupsRepository _formsGroupsRepository;
-    private readonly FormsRepository _formsRepository;
-    private readonly QuestionsRepository _questionsRepository;
-    private readonly AnswersRepository _answersRepository;
-
-    public FormsGroupsCommandHandler(FormsGroupsRepository repository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
-    {
-      _formsGroupsRepository = repository;
-      _formsRepository = formsRepository;
-      _questionsRepository = questionsRepository;
-      _answersRepository = answersRepository;
-    }
+    private readonly FormsGroupsRepository _formsGroupsRepository = repository;
+    private readonly FormsRepository _formsRepository = formsRepository;
+    private readonly QuestionsRepository _questionsRepository = questionsRepository;
+    private readonly AnswersRepository _answersRepository = answersRepository;
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {
@@ -51,7 +43,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       List<FormsGroup> groupsList = await _formsGroupsRepository.GetGroups();
 
-      if (!groupsList.Any())
+      if (groupsList.Count == 0)
       {
         throw new Exception("Não há grupos cadastrados!");
       }

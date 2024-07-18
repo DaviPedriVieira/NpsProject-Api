@@ -20,36 +20,28 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<List<Answer>>> Get()
     {
-      List<Answer> answersList = await _answerService.GetAnswers();
-
-      return Ok(answersList);
+      return Ok(await _answerService.GetAnswers());
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpGet("api/[controller]/User/{userId}")]
+    [HttpGet("User/{userId}")]
     public async Task<ActionResult<List<Answer>>> GetByClientId(int userId)
     {
-      List<Answer> answersList = await _answerService.GetAnswersByClientId(userId);
-
-      return Ok(answersList);
+      return Ok(await _answerService.GetAnswersByClientId(userId));
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Answer>> GetById(int id)
     {
-      Answer answer = await _answerService.GetAnswerById(id);
-
-      return Ok(answer);
+      return Ok(await _answerService.GetAnswerById(id));
     }
 
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<Answer>> SubmitAnswer(Answer answer)
     {
-      Answer newAnswer = await _answerService.SubmitAnswer(answer);
-
-      return Ok(newAnswer);
+      return Ok(await _answerService.SubmitAnswer(answer));
     }
   }
 }

@@ -1,23 +1,21 @@
-using NpsApi._3___Domain.Enums;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using NpsApi.Models;
 using NpsApi.Repositories;
+using System.Security.Claims;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class UsersCommandHandler
+  public class UsersCommandHandler(UsersRepository userRepository, IHttpContextAccessor httpContextAccessor)
   {
-    private readonly UsersRepository _userRepository;
-
-    public UsersCommandHandler(UsersRepository userRepository)
-    {
-      _userRepository = userRepository;
-    }
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly UsersRepository _userRepository = userRepository;
 
     public async Task<User> CreateUser(User user)
     {
       if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Password))
       {
-        throw new ArgumentNullException("O nome/senha não podem ser vazios!");
+        throw new ArgumentNullException(user.Name, "O nome/senha não podem ser vazios!");
       }
 
       List<User> users = await GetUsers();
@@ -25,7 +23,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (repeatedNameUser != null)
       {
-        throw new Exception("Nome de usuário já existente!");
+        throw new ArgumentException(user.Name, "Nome de usuário já existente!");
       }
 
       return await _userRepository.CreateUser(user);
@@ -35,7 +33,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       List<User> usersList = await _userRepository.GetUsers();
 
-      if (!usersList.Any())
+      if (usersList.Count == 0)
       {
         throw new Exception("Não há perguntas cadastradas!");
       }
@@ -47,12 +45,52 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       User? user = await _userRepository.GetUserById(id);
 
-      if(user == null)
+      if (user == null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum usuário com o Id = {id}!");
       }
-
       return user;
+    }
+
+    public async Task<string> Login(string name, string password)
+    {
+      List<User> usersList = await _userRepository.GetUsers();
+      User? user = usersList.Find(user => user.Name == name && user.Password == password);
+
+      if (user == null)
+      {
+        throw new ArgumentException("name, password", "Não há usuários com este nome e senha!");
+      }
+
+      if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+      {
+        return "O usuário já estava logado!";
+      }
+
+      List<Claim> claims = new List<Claim> {
+         new Claim(ClaimTypes.Name, user.Name),
+         new Claim(ClaimTypes.Role, user.Type.ToString())
+      };
+
+      ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+      await _httpContextAccessor.HttpContext.SignInAsync(
+        CookieAuthenticationDefaults.AuthenticationScheme,
+        new ClaimsPrincipal(claimsIdentity),
+        new AuthenticationProperties
+        {
+          AllowRefresh = true,
+          IsPersistent = true,
+        });
+
+      return "Login realizado!";
+    }
+
+    public async Task<string> Logout()
+    {
+      await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+      return "Logout realizado!";
     }
   }
 }

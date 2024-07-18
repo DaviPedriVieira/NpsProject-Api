@@ -5,14 +5,9 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class AnswersRepository
+  public class AnswersRepository(DataBaseConnection connection)
   {
-    private readonly DataBaseConnection _connection;
-
-    public AnswersRepository(DataBaseConnection connection)
-    {
-      _connection = connection;
-    }
+    private readonly DataBaseConnection _connection = connection;
 
     public async Task<Answer> SubmitAnswer(Answer answer)
     {
@@ -30,9 +25,7 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Notes", answer.Notes);
           command.Parameters.AddWithValue("@Date", DateTime.Now);
 
-          var id = await command.ExecuteScalarAsync();
-          answer.Id = Convert.ToInt32(id);
-
+          answer.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
           return answer;
         }
       }
