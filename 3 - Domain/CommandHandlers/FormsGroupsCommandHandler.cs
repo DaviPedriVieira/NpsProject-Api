@@ -3,12 +3,20 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class FormsGroupsCommandHandler(FormsGroupsRepository repository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
+  public class FormsGroupsCommandHandler
   {
-    private readonly FormsGroupsRepository _formsGroupsRepository = repository;
-    private readonly FormsRepository _formsRepository = formsRepository;
-    private readonly QuestionsRepository _questionsRepository = questionsRepository;
-    private readonly AnswersRepository _answersRepository = answersRepository;
+    private readonly FormsGroupsRepository _formsGroupsRepository;
+    private readonly FormsRepository _formsRepository;
+    private readonly QuestionsRepository _questionsRepository;
+    private readonly AnswersRepository _answersRepository;
+
+    public FormsGroupsCommandHandler(FormsGroupsRepository formsGroupsRepository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
+    {
+      _formsGroupsRepository = formsGroupsRepository;
+      _formsRepository = formsRepository;
+      _questionsRepository = questionsRepository;
+      _answersRepository = answersRepository;
+    }
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {

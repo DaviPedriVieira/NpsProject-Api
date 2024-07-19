@@ -1,3 +1,5 @@
+using Microsoft.OpenApi.Extensions;
+using NpsApi._3___Domain.Models.Enums;
 using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
@@ -5,9 +7,14 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class UsersRepository(DataBaseConnection connection)
+  public class UsersRepository
   {
-    private readonly DataBaseConnection _connection = connection;
+    private readonly DataBaseConnection _connection;
+
+    public UsersRepository(DataBaseConnection connection)
+    {
+      _connection = connection;
+    }
 
     public async Task<User> CreateUser(User user)
     {
@@ -37,7 +44,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM usuarios";
 
-        List<User> users = new List<User>();
+        List<User> usersList = new List<User>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -50,14 +57,15 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
                 Password = reader.GetString("senha"),
-                Type = Enum.Parse<User.UserType>(reader.GetString("tipo")),
+                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
               };
 
-              users.Add(user);
+              usersList.Add(user);
             }
           }
         }
-        return users;
+
+        return usersList;
       }
     }
 
@@ -84,7 +92,7 @@ namespace NpsApi.Repositories
                 Id = reader.GetInt32("id"),
                 Name = reader.GetString("nome"),
                 Password = reader.GetString("senha"),
-                Type = Enum.Parse<User.UserType>(reader.GetString("tipo")),
+                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
               };
             }
 

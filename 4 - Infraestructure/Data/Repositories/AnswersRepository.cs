@@ -5,9 +5,14 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class AnswersRepository(DataBaseConnection connection)
+  public class AnswersRepository
   {
-    private readonly DataBaseConnection _connection = connection;
+    private readonly DataBaseConnection _connection;
+
+    public AnswersRepository(DataBaseConnection connection)
+    {
+      _connection = connection;
+    }
 
     public async Task<Answer> SubmitAnswer(Answer answer)
     {
@@ -26,20 +31,21 @@ namespace NpsApi.Repositories
           command.Parameters.AddWithValue("@Date", DateTime.Now);
 
           answer.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
+          answer.Date = DateTime.Now;
           return answer;
         }
       }
     }
 
-    public async Task<List<Answer>> GetAnswersByClientId(int userId)
+    public async Task<List<Answer>> GetAnswersByUserId(int userId)
     {
-      List<Answer> answersList = new List<Answer>();
-
       using (SqlConnection connection = _connection.GetConnectionString())
       {
         await connection.OpenAsync();
 
         string query = "SELECT * FROM  respostas WHERE idUsuario = @UserId";
+
+        List<Answer> answersList = new List<Answer>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -144,7 +150,7 @@ namespace NpsApi.Repositories
       {
         await connection.OpenAsync();
 
-        string query = "DELETE * FROM respostas WHERE idPergunta = @QuestionId";
+        string query = "DELETE FROM respostas WHERE idPergunta = @QuestionId";
 
         List<Answer> answersList = new List<Answer>();
 
@@ -152,14 +158,7 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@QuestionId", questionId);
 
-          if (await command.ExecuteNonQueryAsync() > 0)
-          {
-            return true;
-          }
-          else
-          {
-            return false;
-          }
+          return await command.ExecuteNonQueryAsync() > 0;
         }
       }
     }

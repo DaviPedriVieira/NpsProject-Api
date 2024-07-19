@@ -3,9 +3,14 @@ using NpsApi.Models;
 
 namespace NpsApi.Application.Services
 {
-  public class UsersService(UsersCommandHandler usersCommandHandler)
+  public class UsersService
   {
-    private readonly UsersCommandHandler _userCommandHandler = usersCommandHandler;
+    private readonly UsersCommandHandler _userCommandHandler;
+
+    public UsersService(UsersCommandHandler usersCommandHandler)
+    {
+      _userCommandHandler = usersCommandHandler;
+    }
 
     public async Task<User> CreateUser(User user)
     {

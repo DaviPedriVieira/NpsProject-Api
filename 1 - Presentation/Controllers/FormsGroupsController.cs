@@ -50,6 +50,5 @@ namespace NpsApi.Presentation.Controllers
     {
       return Ok(await _groupFormsService.UpdateGroup(id, group));
     }
-
   }
 }

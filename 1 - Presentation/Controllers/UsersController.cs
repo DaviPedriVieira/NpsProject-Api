@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using NpsApi.Application.Services;
 using NpsApi.Models;
 
-
 namespace NpsApi.Presentation.Controllers
 {
   [Route("api/[controller]")]
@@ -17,7 +16,6 @@ namespace NpsApi.Presentation.Controllers
       _usersService = usersService;
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<ActionResult<User>> Create(User user)
     {
@@ -29,6 +27,7 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<User>> Get()
     {
+      Console.WriteLine(DateTime.Now);
       return Ok(await _usersService.GetUsers());
     }
 

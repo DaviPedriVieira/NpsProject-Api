@@ -3,9 +3,14 @@ using NpsApi.Models;
 
 namespace NpsApi.Application.Services
 {
-  public class FormsService(FormsCommandHandler formsCommandHandler)
+  public class FormsService
   {
-    private readonly FormsCommandHandler _formsCommandHandler = formsCommandHandler;
+    private readonly FormsCommandHandler _formsCommandHandler;
+
+    public FormsService(FormsCommandHandler formsCommandHandler)
+    {
+      _formsCommandHandler = formsCommandHandler;
+    }
 
     public async Task<Form> CreateForm(Form form)
     {

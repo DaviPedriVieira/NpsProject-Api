@@ -6,7 +6,6 @@ using NpsApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
@@ -41,7 +40,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
       options.Cookie.Name = "NpsProject.AuthCookie";
-      options.ExpireTimeSpan = TimeSpan.FromHours(1);
+      options.ExpireTimeSpan = TimeSpan.FromHours(4);
     });
 
 builder.Services.AddAuthorization(options =>
@@ -51,7 +50,6 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
   app.UseSwagger();

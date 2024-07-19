@@ -2,12 +2,18 @@ using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 
 namespace NpsApi.Repositories
 {
-  public class FormsGroupsRepository(DataBaseConnection connection)
+  public class FormsGroupsRepository
   {
-    private readonly DataBaseConnection _connection = connection;
+    private readonly DataBaseConnection _connection;
+
+    public FormsGroupsRepository(DataBaseConnection connection)
+    {
+      _connection = connection;
+    }
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {
@@ -41,7 +47,7 @@ namespace NpsApi.Repositories
         {
           command.Parameters.AddWithValue("@Id", id);
 
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          using (SqlDataReader reader = await command.ExecuteReaderAsync()) 
           {
             if(await reader.ReadAsync())
             {
@@ -67,7 +73,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM grupoFormularios";
 
-        List<FormsGroup> allGroups = new List<FormsGroup>();
+        List<FormsGroup> groupsList = new List<FormsGroup>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -82,12 +88,12 @@ namespace NpsApi.Repositories
                 Forms = new List<Form>(),
               };
 
-              allGroups.Add(group);
+              groupsList.Add(group);
             }
           }
         }
 
-        return allGroups;
+        return groupsList;
       }
     }
 

@@ -5,9 +5,14 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class FormsRepository(DataBaseConnection connection)
+  public class FormsRepository
   {
-    private readonly DataBaseConnection _connection = connection;
+    private readonly DataBaseConnection _connection;
+
+    public FormsRepository(DataBaseConnection connection)
+    {
+      _connection = connection;
+    }
 
     public async Task<Form> CreateForm(Form form)
     {
@@ -69,7 +74,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM formularios";
 
-        List<Form> allForms = new List<Form>();
+        List<Form> formsList = new List<Form>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -85,12 +90,12 @@ namespace NpsApi.Repositories
                 Questions = new List<Question>(),
               };
 
-              allForms.Add(form);
+              formsList.Add(form);
             }
           }
         }
 
-        return allForms;
+        return formsList;
       }
     }
 
@@ -150,6 +155,7 @@ namespace NpsApi.Repositories
               Form form = new Form
               {
                 Id = reader.GetInt32("id"),
+                GroupId = reader.GetInt32("idGrupo"),
                 Name = reader.GetString("nome"),
                 Questions = new List<Question>(),
               };

@@ -6,10 +6,16 @@ using System.Security.Claims;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class UsersCommandHandler(UsersRepository userRepository, IHttpContextAccessor httpContextAccessor)
+  public class UsersCommandHandler
   {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
-    private readonly UsersRepository _userRepository = userRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly UsersRepository _userRepository;
+
+    public UsersCommandHandler(UsersRepository userRepository, IHttpContextAccessor httpContextAccessor)
+    {
+      _httpContextAccessor = httpContextAccessor;
+      _userRepository = userRepository;
+    }
 
     public async Task<User> CreateUser(User user)
     {
@@ -60,11 +66,6 @@ namespace NpsApi._3___Domain.CommandHandlers
       if (user == null)
       {
         throw new ArgumentException("name, password", "Não há usuários com este nome e senha!");
-      }
-
-      if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-      {
-        return "O usuário já estava logado!";
       }
 
       List<Claim> claims = new List<Claim> {

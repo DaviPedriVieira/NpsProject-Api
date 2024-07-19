@@ -3,11 +3,18 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class QuestionsCommandHandler(QuestionsRepository repository, AnswersRepository answersRepository, FormsRepository formsRepository)
+  public class QuestionsCommandHandler
   {
-    private readonly FormsRepository _formsRepository = formsRepository;
-    private readonly QuestionsRepository _questionsRepository = repository;
-    private readonly AnswersRepository _answersRepository = answersRepository;
+    private readonly FormsRepository _formsRepository;
+    private readonly QuestionsRepository _questionsRepository;
+    private readonly AnswersRepository _answersRepository;
+
+    public QuestionsCommandHandler(QuestionsRepository questionsRepository, AnswersRepository answersRepository, FormsRepository formsRepository)
+    {
+      _formsRepository = formsRepository;
+      _questionsRepository = questionsRepository;
+      _answersRepository = answersRepository;
+    }
 
     public async Task<Question> CreateQuestion(Question question)
     {

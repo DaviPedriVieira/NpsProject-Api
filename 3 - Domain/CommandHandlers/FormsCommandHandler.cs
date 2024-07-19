@@ -3,12 +3,20 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class FormsCommandHandler(FormsGroupsRepository formsGroupsRepository, FormsRepository repository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
+  public class FormsCommandHandler
   {
-    private readonly FormsGroupsRepository _formsGroupsRepository = formsGroupsRepository;
-    private readonly FormsRepository _formsRepository = repository;
-    private readonly QuestionsRepository _questionsRepository = questionsRepository;
-    private readonly AnswersRepository _answersRepository = answersRepository;
+    private readonly FormsGroupsRepository _formsGroupsRepository;
+    private readonly FormsRepository _formsRepository;
+    private readonly QuestionsRepository _questionsRepository;
+    private readonly AnswersRepository _answersRepository;
+
+    public FormsCommandHandler(FormsGroupsRepository formsGroupsRepository, FormsRepository formsRepository, QuestionsRepository questionsRepository, AnswersRepository answersRepository)
+    {
+      _answersRepository = answersRepository;
+      _questionsRepository = questionsRepository;
+      _formsGroupsRepository = formsGroupsRepository;
+      _formsRepository = formsRepository;
+    }
 
     public async Task<Form> CreateForm(Form form)
     {

@@ -3,18 +3,23 @@ using NpsApi.Models;
 
 namespace NpsApi.Application.Services
 {
-  public class AnswersService(AnswersCommandHandler answersCommandHandler)
+  public class AnswersService
   {
-    private readonly AnswersCommandHandler _answersCommandHandler = answersCommandHandler;
+    private readonly AnswersCommandHandler _answersCommandHandler;
+
+    public AnswersService(AnswersCommandHandler answersCommandHandler)
+    {
+      _answersCommandHandler = answersCommandHandler;
+    }
 
     public async Task<Answer> SubmitAnswer(Answer answer)
     {
       return await _answersCommandHandler.SubmitAnswer(answer);
     }
 
-    public async Task<List<Answer>> GetAnswersByClientId(int userId)
+    public async Task<List<Answer>> GetAnswersByUserId(int userId)
     {
-      return await _answersCommandHandler.GetAnswersByClientId(userId);
+      return await _answersCommandHandler.GetAnswersByUserId(userId);
     }
 
     public async Task<Answer> GetAnswerById(int id)

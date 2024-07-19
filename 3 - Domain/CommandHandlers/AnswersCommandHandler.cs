@@ -3,11 +3,18 @@ using NpsApi.Repositories;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
-  public class AnswersCommandHandler(AnswersRepository answersRepository, UsersRepository usersRepository, QuestionsRepository questionsRepository)
+  public class AnswersCommandHandler
   {
-    private readonly AnswersRepository _answersRepository = answersRepository;
-    private readonly UsersRepository _usersRepository = usersRepository;
-    private readonly QuestionsRepository _questionsRepository = questionsRepository;
+    private readonly AnswersRepository _answersRepository;
+    private readonly UsersRepository _usersRepository;
+    private readonly QuestionsRepository _questionsRepository;
+
+    public AnswersCommandHandler(AnswersRepository answersRepository, UsersRepository usersRepository, QuestionsRepository questionsRepository)
+    {
+      _answersRepository = answersRepository;
+      _usersRepository = usersRepository;
+      _questionsRepository = questionsRepository;
+    }
 
     public async Task<Answer> SubmitAnswer(Answer answer)
     {
@@ -33,16 +40,16 @@ namespace NpsApi._3___Domain.CommandHandlers
       return await _answersRepository.SubmitAnswer(answer);
     }
 
-    public async Task<List<Answer>> GetAnswersByClientId(int userId)
+    public async Task<List<Answer>> GetAnswersByUserId(int userId)
     {
       User? user = await _usersRepository.GetUserById(userId);
 
       if (user == null)
       {
-        throw new KeyNotFoundException($"Erro na FK answer.UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
+        throw new KeyNotFoundException($"Erro na FK answer. UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
       }
 
-      List<Answer> answers = await _answersRepository.GetAnswersByClientId(userId);
+      List<Answer> answers = await _answersRepository.GetAnswersByUserId(userId);
 
       if (answers.Count == 0)
       {

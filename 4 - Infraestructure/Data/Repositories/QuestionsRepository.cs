@@ -5,9 +5,14 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Repositories
 {
-  public class QuestionsRepository(DataBaseConnection connection)
+  public class QuestionsRepository
   {
-    private readonly DataBaseConnection _connection = connection;
+    private readonly DataBaseConnection _connection;
+
+    public QuestionsRepository(DataBaseConnection connection)
+    {
+      _connection = connection;
+    }
 
     public async Task<Question> CreateQuestion(Question question)
     {
@@ -53,7 +58,6 @@ namespace NpsApi.Repositories
                 Content = reader.GetString("conteudo"),
                 Answers = new List<Answer>(),
               };
-
             }
 
           return question;
@@ -70,7 +74,7 @@ namespace NpsApi.Repositories
 
         string query = "SELECT * FROM perguntas";
 
-        List<Question> questions = new List<Question>();
+        List<Question> questionsList = new List<Question>();
 
         using (SqlCommand command = new SqlCommand(query, connection))
         {
@@ -86,12 +90,12 @@ namespace NpsApi.Repositories
                 Answers = new List<Answer>(),
               };
 
-              questions.Add(question);
+              questionsList.Add(question);
             }
           }
         }
 
-        return questions;
+        return questionsList;
       }
     }
 
