@@ -20,7 +20,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       Form? form = await _formsRepository.GetFormById(question.FormId);
 
-      if (form == null)
+      if (form is null)
       {
         throw new KeyNotFoundException($"Erro na Fk, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
       }
@@ -37,7 +37,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       Question? question = await _questionsRepository.GetQuestionById(id);
 
-      if (question == null)
+      if (question is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
@@ -57,32 +57,37 @@ namespace NpsApi._3___Domain.CommandHandlers
       return questionsList;
     }
 
-    public async Task<bool> DeleteQuestion(int id)
+    public async Task<string> DeleteQuestion(int id)
     {
       Question? question = await _questionsRepository.GetQuestionById(id);
 
-      if (question == null)
+      if (question is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
+        throw new KeyNotFoundException($"Não foi encontrada nenhuma pergunta com o Id = {id}!");
       }
 
-      await _answersRepository.DeleteAnswersByQuestionId(id);
+      if (question.Answers.Count > 0)
+      {
+        await _answersRepository.DeleteAnswersByQuestionId(id);
+      }
 
-      return await _questionsRepository.DeleteQuestion(id);
+      bool deleted = await _questionsRepository.DeleteQuestion(id);
+
+      return deleted ? "Pergunta excluída!" : "Não foi possível excluir a pergunta!";
     }
 
-    public async Task<bool> UpdateQuestion(int id, Question question)
+    public async Task<string> UpdateQuestion(int id, Question question)
     {
       Question? toUpdateQuestion = await _questionsRepository.GetQuestionById(id);
 
-      if (toUpdateQuestion == null)
+      if (toUpdateQuestion is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
       Form? form = await _formsRepository.GetFormById(question.FormId);
 
-      if (form == null)
+      if (form is null)
       {
         throw new KeyNotFoundException($"Erro na Fk question.FormId, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
       }
@@ -92,7 +97,9 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new ArgumentNullException("question.Content", "O nome não pode ser vazio!");
       }
 
-      return await _questionsRepository.UpdateQuestion(id, question);
+      bool updated = await _questionsRepository.UpdateQuestion(id, question);
+
+      return updated ? "Pergunta editada!" : "Não foi possível editar a pergunta!";
     }
   }
 }

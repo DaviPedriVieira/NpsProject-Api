@@ -1,4 +1,3 @@
-using Microsoft.OpenApi.Extensions;
 using NpsApi._3___Domain.Models.Enums;
 using NpsApi.Data;
 using NpsApi.Models;
@@ -9,28 +8,28 @@ namespace NpsApi.Repositories
 {
   public class UsersRepository
   {
-    private readonly DataBaseConnection _connection;
+    private readonly DatabaseConnection _connection;
 
-    public UsersRepository(DataBaseConnection connection)
+    public UsersRepository(DatabaseConnection sqlConnection)
     {
-      _connection = connection;
+      _connection = sqlConnection;
     }
 
     public async Task<User> CreateUser(User user)
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "INSERT INTO usuarios (nome, senha, tipo) VALUES (@Name, @Password, @Type); SELECT SCOPE_IDENTITY();";
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          command.Parameters.AddWithValue("@Name", user.Name);
-          command.Parameters.AddWithValue("@Password", user.Password);
-          command.Parameters.AddWithValue("@Type", user.Type.ToString());
+          sqlCommand.Parameters.AddWithValue("@Name", user.Name);
+          sqlCommand.Parameters.AddWithValue("@Password", user.Password);
+          sqlCommand.Parameters.AddWithValue("@Type", user.Type.ToString());
 
-          user.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
+          user.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
           return user;
         }
       }
@@ -38,26 +37,26 @@ namespace NpsApi.Repositories
 
     public async Task<List<User>> GetUsers()
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "SELECT * FROM usuarios";
 
         List<User> usersList = new List<User>();
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
-            while (await reader.ReadAsync())
+            while (await sqlDataReader.ReadAsync())
             {
               User user = new User
               {
-                Id = reader.GetInt32("id"),
-                Name = reader.GetString("nome"),
-                Password = reader.GetString("senha"),
-                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
+                Id = sqlDataReader.GetInt32("id"),
+                Name = sqlDataReader.GetString("nome"),
+                Password = sqlDataReader.GetString("senha"),
+                Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
               };
 
               usersList.Add(user);
@@ -71,28 +70,28 @@ namespace NpsApi.Repositories
 
     public async Task<User?> GetUserById(int id)
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "SELECT * FROM usuarios WHERE id = @Id";
 
         User? user = null;
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          command.Parameters.AddWithValue("@Id", id);
+          sqlCommand.Parameters.AddWithValue("@Id", id);
 
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
-            if (await reader.ReadAsync())
+            if (await sqlDataReader.ReadAsync())
             {
               user = new User
               {
-                Id = reader.GetInt32("id"),
-                Name = reader.GetString("nome"),
-                Password = reader.GetString("senha"),
-                Type = Enum.Parse<UserType>(reader.GetString("tipo")),
+                Id = sqlDataReader.GetInt32("id"),
+                Name = sqlDataReader.GetString("nome"),
+                Password = sqlDataReader.GetString("senha"),
+                Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
               };
             }
 

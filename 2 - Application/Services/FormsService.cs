@@ -27,12 +27,12 @@ namespace NpsApi.Application.Services
       return await _formsCommandHandler.GetForms();
     }
 
-    public async Task<bool> DeleteForm(int id)
+    public async Task<string> DeleteForm(int id)
     {
       return await _formsCommandHandler.DeleteForm(id);
     }
 
-    public async Task<bool> UpdateForm(int id, Form form)
+    public async Task<string> UpdateForm(int id, Form form)
     {
       return await _formsCommandHandler.UpdateForm(id, form);
     }

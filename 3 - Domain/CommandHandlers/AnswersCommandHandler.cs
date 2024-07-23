@@ -25,14 +25,14 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       Question? question = await _questionsRepository.GetQuestionById(answer.QuestionId);
 
-      if (question == null)
+      if (question is null)
       {
         throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhuma pergunta com o Id = {answer.QuestionId}!");
       }
 
       User? user = await _usersRepository.GetUserById(answer.UserId);
 
-      if (user == null)
+      if (user is null)
       {
         throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhum usuário com o Id = {answer.UserId}!");
       }
@@ -44,7 +44,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       User? user = await _usersRepository.GetUserById(userId);
 
-      if (user == null)
+      if (user is null)
       {
         throw new KeyNotFoundException($"Erro na FK answer. UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
       }
@@ -63,7 +63,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       Answer? answer = await _answersRepository.GetAnswerById(id);
 
-      if (answer == null)
+      if (answer is null)
       {
         throw new KeyNotFoundException($"Não foi encontrada nenhuma resposta com o Id = {id}!");
       }

@@ -32,9 +32,9 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       FormsGroup? group = await _formsGroupsRepository.GetGroupById(id);
 
-      if (group == null)
+      if (group is null)
       {
-        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}");
+        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}!");
       }
 
       group.Forms = await _formsRepository.GetFormsByGroupId(group.Id);
@@ -59,13 +59,13 @@ namespace NpsApi._3___Domain.CommandHandlers
       return groupsList;
     }
 
-    public async Task<bool> DeleteGroup(int id)
+    public async Task<string> DeleteGroup(int id)
     {
       FormsGroup? group = await _formsGroupsRepository.GetGroupById(id);
 
-      if (group == null)
+      if (group is null)
       {
-        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}");
+        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}!");
       }
 
       List<Form> formsInsideGroup = await _formsRepository.GetFormsByGroupId(id);
@@ -76,7 +76,10 @@ namespace NpsApi._3___Domain.CommandHandlers
 
         foreach (Question question in questionsList)
         {
-          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+          if(question.Answers.Count > 0)
+          {
+            await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+          }
 
           await _questionsRepository.DeleteQuestion(question.Id);
         }
@@ -84,16 +87,18 @@ namespace NpsApi._3___Domain.CommandHandlers
         await _formsRepository.DeleteForm(form.Id);
       }
 
-      return await _formsGroupsRepository.DeleteGroup(id);
+      bool deleted = await _formsGroupsRepository.DeleteGroup(id);
+
+      return deleted ? "Grupo excluído!" : "Não foi possível excluir o grupo!";
     }
 
-    public async Task<bool> UpdateGroup(int id, FormsGroup group)
+    public async Task<string> UpdateGroup(int id, FormsGroup group)
     {
       FormsGroup? toUpdateGroup = await _formsGroupsRepository.GetGroupById(id);
 
-      if (toUpdateGroup == null)
+      if (toUpdateGroup is null)
       {
-        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}");
+        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}!");
       }
 
       if (string.IsNullOrWhiteSpace(group.Name))
@@ -101,7 +106,9 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new ArgumentNullException("group.Name", "O nome não pode ser vazio!");
       }
 
-      return await _formsGroupsRepository.UpdateGroup(id, group);
+      bool updated = await _formsGroupsRepository.UpdateGroup(id, group);
+
+      return updated ? "Grupo editado!" : "Não foi possível editar o grupo!";
     }
   }
 }

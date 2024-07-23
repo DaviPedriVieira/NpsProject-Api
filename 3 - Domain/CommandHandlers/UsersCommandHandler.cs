@@ -32,7 +32,11 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new ArgumentException(user.Name, "Nome de usuário já existente!");
       }
 
-      return await _userRepository.CreateUser(user);
+      User createdUser = await _userRepository.CreateUser(user);
+
+      await Login(createdUser.Name, createdUser.Password);
+
+      return createdUser;
     }
 
     public async Task<List<User>> GetUsers()
@@ -51,7 +55,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       User? user = await _userRepository.GetUserById(id);
 
-      if (user == null)
+      if (user is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum usuário com o Id = {id}!");
       }
@@ -63,7 +67,7 @@ namespace NpsApi._3___Domain.CommandHandlers
       List<User> usersList = await _userRepository.GetUsers();
       User? user = usersList.Find(user => user.Name == name && user.Password == password);
 
-      if (user == null)
+      if (user is null)
       {
         throw new ArgumentException("name, password", "Não há usuários com este nome e senha!");
       }

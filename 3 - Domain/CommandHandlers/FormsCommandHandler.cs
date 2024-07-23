@@ -22,7 +22,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       FormsGroup? group = await _formsGroupsRepository.GetGroupById(form.GroupId);
 
-      if (group == null)
+      if (group is null)
       {
         throw new KeyNotFoundException($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
       }
@@ -47,7 +47,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       Form? form = await _formsRepository.GetFormById(id);
 
-      if(form == null)
+      if(form is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
@@ -69,11 +69,11 @@ namespace NpsApi._3___Domain.CommandHandlers
       return groupsList;
     }
 
-    public async Task<bool> DeleteForm(int id)
+    public async Task<string> DeleteForm(int id)
     {
       Form? form = await _formsRepository.GetFormById(id);
 
-      if (form == null)
+      if (form is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
@@ -82,26 +82,31 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       foreach (Question question in questionsList)
       {
-        await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+        if (question.Answers.Count > 0)
+        {
+          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+        }
 
         await _questionsRepository.DeleteQuestion(question.Id);
       }
 
-      return await _formsRepository.DeleteForm(id);
+      bool deleted = await _formsRepository.DeleteForm(id);
+
+      return deleted ? "Formulário excluído!" : "Não foi possível excluir o formulário!";
     }
 
-    public async Task<bool> UpdateForm(int id, Form form)
+    public async Task<string> UpdateForm(int id, Form form)
     {
       Form? toUpdateForm = await _formsRepository.GetFormById(id);
 
-      if (toUpdateForm == null)
+      if (toUpdateForm is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
       FormsGroup? group = await _formsGroupsRepository.GetGroupById(form.GroupId);
 
-      if (group == null)
+      if (group is null)
       {
         throw new KeyNotFoundException($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
       }
@@ -111,7 +116,9 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new ArgumentNullException("form.Name", "O nome não pode ser vazio!");
       }
 
-      return await _formsRepository.UpdateForm(id, form);
+      bool updated = await _formsRepository.UpdateForm(id, form);
+
+      return updated ? "Formulário editado!" : "Não foi possível editar o formulário!";
     }
   }
 }

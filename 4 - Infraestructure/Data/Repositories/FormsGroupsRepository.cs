@@ -2,32 +2,31 @@ using NpsApi.Data;
 using NpsApi.Models;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 
 namespace NpsApi.Repositories
 {
   public class FormsGroupsRepository
   {
-    private readonly DataBaseConnection _connection;
+    private readonly DatabaseConnection _connection;
 
-    public FormsGroupsRepository(DataBaseConnection connection)
+    public FormsGroupsRepository(DatabaseConnection sqlConnection)
     {
-      _connection = connection;
+      _connection = sqlConnection;
     }
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "INSERT INTO grupoFormularios (nome) VALUES (@Name); SELECT SCOPE_IDENTITY();";
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          command.Parameters.AddWithValue("@Name", group.Name);
+          sqlCommand.Parameters.AddWithValue("@Name", group.Name);
 
-          group.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
+          group.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
           return group;
         }
       }
@@ -35,26 +34,26 @@ namespace NpsApi.Repositories
 
     public async Task<FormsGroup?> GetGroupById(int id)
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "SELECT * FROM grupoFormularios WHERE id = @Id";
 
         FormsGroup? group = null;
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          command.Parameters.AddWithValue("@Id", id);
+          sqlCommand.Parameters.AddWithValue("@Id", id);
 
-          using (SqlDataReader reader = await command.ExecuteReaderAsync()) 
+          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync()) 
           {
-            if(await reader.ReadAsync())
+            if (await sqlDataReader.ReadAsync())
             {
               group = new FormsGroup
               {
-                Id = reader.GetInt32("id"),
-                Name = reader.GetString("nome"),
+                Id = sqlDataReader.GetInt32("id"),
+                Name = sqlDataReader.GetString("nome"),
                 Forms = new List<Form>(),
               };
             }
@@ -67,24 +66,24 @@ namespace NpsApi.Repositories
 
     public async Task<List<FormsGroup>> GetGroups()
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "SELECT * FROM grupoFormularios";
 
         List<FormsGroup> groupsList = new List<FormsGroup>();
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          using (SqlDataReader reader = await command.ExecuteReaderAsync())
+          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
-            while (await reader.ReadAsync())
+            while (await sqlDataReader.ReadAsync())
             {
               FormsGroup group = new FormsGroup
               {
-                Id = reader.GetInt32("id"),
-                Name = reader.GetString("nome"),
+                Id = sqlDataReader.GetInt32("id"),
+                Name = sqlDataReader.GetString("nome"),
                 Forms = new List<Form>(),
               };
 
@@ -99,35 +98,35 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteGroup(int id)
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "DELETE FROM grupoFormularios WHERE id = @Id";
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          command.Parameters.AddWithValue("@Id", id);
+          sqlCommand.Parameters.AddWithValue("@Id", id);
 
-          return await command.ExecuteNonQueryAsync() > 0;
+          return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
     }
 
     public async Task<bool> UpdateGroup(int id, FormsGroup group)
     {
-      using (SqlConnection connection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _connection.GetConnectionString())
       {
-        await connection.OpenAsync();
+        await sqlConnection.OpenAsync();
 
         string query = "UPDATE grupoFormularios SET nome = @Name WHERE id = @Id";
 
-        using (SqlCommand command = new SqlCommand(query, connection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          command.Parameters.AddWithValue("@Id", id);
-          command.Parameters.AddWithValue("@Name", group.Name);
+          sqlCommand.Parameters.AddWithValue("@Id", id);
+          sqlCommand.Parameters.AddWithValue("@Name", group.Name);
 
-          return await command.ExecuteNonQueryAsync() > 0;
+          return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
     }

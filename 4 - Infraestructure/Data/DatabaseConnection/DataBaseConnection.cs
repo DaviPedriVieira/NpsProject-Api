@@ -2,13 +2,13 @@ using System.Data.SqlClient;
 
 namespace NpsApi.Data
 {
-  public class DataBaseConnection
+  public class DatabaseConnection
   {
     private readonly string _connectionString;
 
-    public DataBaseConnection(string connectionString)
+    public DatabaseConnection(string sqlConnectionString)
     {
-      _connectionString = connectionString;
+      _connectionString = sqlConnectionString;
     }
 
     public SqlConnection GetConnectionString()

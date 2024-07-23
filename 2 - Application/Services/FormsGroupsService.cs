@@ -27,12 +27,12 @@ namespace NpsApi.Application.Services
       return await _formsGroupsCommandHandler.GetGroups();
     }
 
-    public async Task<bool> DeleteGroup(int id)
+    public async Task<string> DeleteGroup(int id)
     {
       return await _formsGroupsCommandHandler.DeleteGroup(id);
     }
 
-    public async Task<bool> UpdateGroup(int id, FormsGroup group)
+    public async Task<string> UpdateGroup(int id, FormsGroup group)
     {
       return await _formsGroupsCommandHandler.UpdateGroup(id, group);
     }

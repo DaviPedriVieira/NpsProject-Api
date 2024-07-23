@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NpsApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8846eae28584fb0aed1f9dfc038079e9c5c2d15e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f9ac53baba1b0a361ea625198f7c6c60c7b2918")]
 [assembly: System.Reflection.AssemblyProductAttribute("NpsApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NpsApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

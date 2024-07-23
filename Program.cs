@@ -14,7 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddSingleton(new DataBaseConnection(connectionString));
+builder.Services.AddSingleton(new DatabaseConnection(connectionString));
 
 builder.Services.AddScoped<FormsGroupsService>();
 builder.Services.AddScoped<FormsGroupsRepository>();
@@ -36,12 +36,11 @@ builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<UsersRepository>();
 builder.Services.AddScoped<UsersCommandHandler>();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-      options.Cookie.Name = "NpsProject.AuthCookie";
-      options.ExpireTimeSpan = TimeSpan.FromHours(4);
-    });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+  options.Cookie.Name = "NpsProject.AuthCookie";
+  options.ExpireTimeSpan = TimeSpan.FromHours(4);
+});
 
 builder.Services.AddAuthorization(options =>
 {
