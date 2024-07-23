@@ -22,14 +22,14 @@ namespace NpsApi.Repositories
 
         answer.Date = DateTime.Now;
 
-        string query = "INSERT INTO respostas (idPergunta, idUsuario, resposta, descricao, dataHora) VALUES (@QuestionId, @UserId, @Grade, @Notes, @Date); SELECT SCOPE_IDENTITY();";
+        string query = "INSERT INTO respostas (idPergunta, idUsuario, resposta, descricao, dataHora) VALUES (@QuestionId, @UserId, @Grade, @Description, @Date); SELECT SCOPE_IDENTITY();";
 
         using(SqlCommand sqlCommand = new SqlCommand (query, sqlConnection))
         {
           sqlCommand.Parameters.AddWithValue("@QuestionId", answer.QuestionId);
           sqlCommand.Parameters.AddWithValue("@UserId", answer.UserId);
           sqlCommand.Parameters.AddWithValue("@Grade", answer.Grade);
-          sqlCommand.Parameters.AddWithValue("@Notes", answer.Notes);
+          sqlCommand.Parameters.AddWithValue("@Description", answer.Description);
           sqlCommand.Parameters.AddWithValue("@Date", answer.Date);
 
           answer.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
@@ -62,7 +62,7 @@ namespace NpsApi.Repositories
                 QuestionId = sqlDataReader.GetInt32("idPergunta"),
                 UserId = sqlDataReader.GetInt32("idUsuario"),
                 Grade = sqlDataReader.GetInt32("resposta"),
-                Notes = sqlDataReader.GetString("descricao"),
+                Description = sqlDataReader.GetString("descricao"),
                 Date = sqlDataReader.GetDateTime("dataHora"),
               };
 
@@ -97,7 +97,7 @@ namespace NpsApi.Repositories
                 QuestionId = sqlDataReader.GetInt32("idPergunta"),
                 UserId = sqlDataReader.GetInt32("idUsuario"),
                 Grade = sqlDataReader.GetInt32("resposta"),
-                Notes = sqlDataReader.GetString("descricao"),
+                Description = sqlDataReader.GetString("descricao"),
                 Date = sqlDataReader.GetDateTime("dataHora"),
               };
 
@@ -134,7 +134,7 @@ namespace NpsApi.Repositories
                 QuestionId = sqlDataReader.GetInt32("idPergunta"),
                 UserId = sqlDataReader.GetInt32("idUsuario"),
                 Grade = sqlDataReader.GetInt32("resposta"),
-                Notes = sqlDataReader.GetString("descricao"),
+                Description = sqlDataReader.GetString("descricao"),
                 Date = sqlDataReader.GetDateTime("dataHora"),
               };
             }

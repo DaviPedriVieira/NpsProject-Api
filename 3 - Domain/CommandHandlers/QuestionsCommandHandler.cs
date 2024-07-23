@@ -73,7 +73,9 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool deleted = await _questionsRepository.DeleteQuestion(id);
 
-      return deleted ? "Pergunta excluída!" : "Não foi possível excluir a pergunta!";
+      string message = deleted ? "Pergunta excluída!" : "Não foi possível excluir a pergunta!";
+
+      return message;
     }
 
     public async Task<string> UpdateQuestion(int id, Question question)
@@ -99,7 +101,9 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool updated = await _questionsRepository.UpdateQuestion(id, question);
 
-      return updated ? "Pergunta editada!" : "Não foi possível editar a pergunta!";
+      string message = updated ? "Pergunta editada!" : "Não foi possível editar a pergunta!";
+
+      return message;
     }
   }
 }

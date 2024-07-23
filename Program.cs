@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using NpsApi._2___Application.Services;
 using NpsApi._3___Domain.CommandHandlers;
 using NpsApi.Application.Services;
 using NpsApi.Data;
@@ -17,24 +18,27 @@ string connectionString = builder.Configuration.GetConnectionString("DefaultConn
 builder.Services.AddSingleton(new DatabaseConnection(connectionString));
 
 builder.Services.AddScoped<FormsGroupsService>();
-builder.Services.AddScoped<FormsGroupsRepository>();
 builder.Services.AddScoped<FormsGroupsCommandHandler>();
+builder.Services.AddScoped<FormsGroupsRepository>();
 
 builder.Services.AddScoped<FormsService>();
-builder.Services.AddScoped<FormsRepository>();
 builder.Services.AddScoped<FormsCommandHandler>();
+builder.Services.AddScoped<FormsRepository>();
 
 builder.Services.AddScoped<QuestionsService>();
-builder.Services.AddScoped<QuestionsRepository>();
 builder.Services.AddScoped<QuestionsCommandHandler>();
+builder.Services.AddScoped<QuestionsRepository>();
 
 builder.Services.AddScoped<AnswersService>();
-builder.Services.AddScoped<AnswersRepository>();
 builder.Services.AddScoped<AnswersCommandHandler>();
+builder.Services.AddScoped<AnswersRepository>();
 
 builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<UsersRepository>();
 builder.Services.AddScoped<UsersCommandHandler>();
+builder.Services.AddScoped<UsersRepository>();
+
+builder.Services.AddScoped<NpsService>();
+builder.Services.AddScoped<NpsCommandHandler>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {

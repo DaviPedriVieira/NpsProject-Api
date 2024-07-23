@@ -92,7 +92,9 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool deleted = await _formsRepository.DeleteForm(id);
 
-      return deleted ? "Formulário excluído!" : "Não foi possível excluir o formulário!";
+      string message = deleted ? "Formulário excluído!" : "Não foi possível excluir o formulário!";
+
+      return message;
     }
 
     public async Task<string> UpdateForm(int id, Form form)
@@ -118,7 +120,9 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool updated = await _formsRepository.UpdateForm(id, form);
 
-      return updated ? "Formulário editado!" : "Não foi possível editar o formulário!";
+      string message = updated ? "Formulário editado!" : "Não foi possível editar o formulário!";
+
+      return message;
     }
   }
 }

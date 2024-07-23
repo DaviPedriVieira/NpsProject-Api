@@ -10,11 +10,13 @@ namespace NpsApi._3___Domain.CommandHandlers
   {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly UsersRepository _userRepository;
+    private readonly AnswersRepository _answersRepository;
 
-    public UsersCommandHandler(UsersRepository userRepository, IHttpContextAccessor httpContextAccessor)
+    public UsersCommandHandler(UsersRepository userRepository, IHttpContextAccessor httpContextAccessor, AnswersRepository answersRepository)
     {
       _httpContextAccessor = httpContextAccessor;
       _userRepository = userRepository;
+      _answersRepository = answersRepository;
     }
 
     public async Task<User> CreateUser(User user)
@@ -96,6 +98,78 @@ namespace NpsApi._3___Domain.CommandHandlers
       await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
       return "Logout realizado!";
+    }
+
+    public async Task<List<User>> GetPromoters()
+    {
+      List<Answer> answersList = await _answersRepository.GetAnswers();
+
+      List<Answer> promoterAnswers = answersList.Where(answer => answer.Grade >= 9).ToList();
+
+      List<User> promoters = new List<User>();
+
+      foreach (Answer answer in promoterAnswers)
+      {
+        User? user = await _userRepository.GetUserById(answer.UserId);
+
+        if (user != null)
+        {
+          if (promoters.Find(x => x.Name == user.Name) == null)
+          {
+            promoters.Add(user);
+          }
+        }
+      }
+
+      return promoters;
+    }
+
+    public async Task<List<User>> GetPassives()
+    {
+      List<Answer> answersList = await _answersRepository.GetAnswers();
+
+      List<Answer> passiveAnswers = answersList.Where(answer => answer.Grade > 6 && answer.Grade < 9).ToList();
+
+      List<User> passives = new List<User>();
+
+      foreach (Answer answer in passiveAnswers)
+      {
+        User? user = await _userRepository.GetUserById(answer.UserId);
+
+        if (user != null)
+        {
+          if (passives.Find(x => x.Name == user.Name) == null)
+          {
+            passives.Add(user);
+          }
+        }
+      }
+
+      return passives;
+    }
+
+    public async Task<List<User>> GetDetractors()
+    {
+      List<Answer> answersList = await _answersRepository.GetAnswers();
+
+      List<Answer> detractorAnswers = answersList.Where(answer => answer.Grade <= 6).ToList();
+
+      List<User> detractors = new List<User>();
+
+      foreach (Answer answer in detractorAnswers)
+      {
+        User? user = await _userRepository.GetUserById(answer.UserId);
+
+        if (user != null)
+        {
+          if (detractors.Find(x => x.Name == user.Name) == null)
+          {
+            detractors.Add(user);
+          }
+        }
+      }
+
+      return detractors;
     }
   }
 }

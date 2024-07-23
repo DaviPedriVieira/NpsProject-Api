@@ -50,6 +50,27 @@ namespace NpsApi.Presentation.Controllers
     {
       return Ok(await _usersService.Logout());
     }
+
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpGet("Promoters")]
+    public async Task<ActionResult<List<User>>> GetPromoters()
+    {
+      return Ok(await _usersService.GetPromoters());
+    }
+
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpGet("Passives")]
+    public async Task<ActionResult<List<User>>> GetPassives()
+    {
+      return Ok(await _usersService.GetPassives());
+    }
+
+    [Authorize(Policy = "AdmininistradorPolicy")]
+    [HttpGet("Detractors")]
+    public async Task<ActionResult<List<User>>> GetDetractors()
+    {
+      return Ok(await _usersService.GetDetractors());
+    }
   }
 }
 

@@ -1,3 +1,4 @@
+using NpsApi._3___Domain.Models;
 using NpsApi.Models;
 using NpsApi.Repositories;
 

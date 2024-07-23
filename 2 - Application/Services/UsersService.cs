@@ -36,5 +36,20 @@ namespace NpsApi.Application.Services
     {
       return await _userCommandHandler.Logout();
     }
+
+    public async Task<List<User>> GetPromoters()
+    {
+      return await _userCommandHandler.GetPromoters();
+    }
+
+    public async Task<List<User>> GetPassives()
+    {
+      return await _userCommandHandler.GetPassives();
+    }
+
+    public async Task<List<User>> GetDetractors()
+    {
+      return await _userCommandHandler.GetDetractors();
+    }
   }
 }
