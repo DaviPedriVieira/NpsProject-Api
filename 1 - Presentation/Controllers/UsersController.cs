@@ -38,14 +38,14 @@ namespace NpsApi.Presentation.Controllers
       return Ok(await _usersService.GetUserById(id));
     }
 
-    [HttpPost("/login")]
+    [HttpPost("Login")]
     public async Task<ActionResult> Login(string name, string password)
     {
       return Ok(await _usersService.Login(name, password));
     }
 
     [Authorize]
-    [HttpPost("/logout")]
+    [HttpPost("Logout")]
     public async Task<ActionResult> Logout()
     {
       return Ok(await _usersService.Logout());

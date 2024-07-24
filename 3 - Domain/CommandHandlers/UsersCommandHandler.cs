@@ -71,7 +71,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (user is null)
       {
-        throw new ArgumentException("name, password", "Não há usuários com este nome e senha!");
+        throw new ArgumentException("Não há usuários com este nome e senha!");
       }
 
       List<Claim> claims = new List<Claim> {
@@ -81,95 +81,54 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-      await _httpContextAccessor.HttpContext.SignInAsync(
-        CookieAuthenticationDefaults.AuthenticationScheme,
-        new ClaimsPrincipal(claimsIdentity),
-        new AuthenticationProperties
-        {
-          AllowRefresh = true,
-          IsPersistent = true,
-        });
+      if (_httpContextAccessor.HttpContext != null)
+      {
+        await _httpContextAccessor.HttpContext.SignInAsync(
+          CookieAuthenticationDefaults.AuthenticationScheme,
+          new ClaimsPrincipal(claimsIdentity),
+          new AuthenticationProperties
+          {
+            AllowRefresh = true,
+            IsPersistent = true,
+          });
 
-      return "Login realizado!";
+        return "Login realizado!";
+      }
+
+      throw new Exception("Não foi possível realizar o login!");
     }
 
     public async Task<string> Logout()
     {
-      await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+      if (_httpContextAccessor.HttpContext != null)
+      {
+        await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-      return "Logout realizado!";
+        return "Logout realizado!";
+      }
+
+      throw new Exception("Não foi possível realizar o logout!");
     }
 
-    public async Task<List<User>> GetPromoters()
+    public async Task<List<User>> GetUsersAccordingAnswersGradeRange(int minValue, int maxValue)
     {
+      List<User> users = new List<User>();
+
       List<Answer> answersList = await _answersRepository.GetAnswers();
 
-      List<Answer> promoterAnswers = answersList.Where(answer => answer.Grade >= 9).ToList();
+      List<Answer> answersFilteredAccordingGrade = answersList.Where(answer => answer.Grade >= minValue && answer.Grade <= maxValue).ToList();
 
-      List<User> promoters = new List<User>();
-
-      foreach (Answer answer in promoterAnswers)
+      foreach (Answer answer in answersFilteredAccordingGrade)
       {
         User? user = await _userRepository.GetUserById(answer.UserId);
 
-        if (user != null)
+        if (user != null && users.Find(x => x.Name == user.Name) is null)
         {
-          if (promoters.Find(x => x.Name == user.Name) == null)
-          {
-            promoters.Add(user);
-          }
+          users.Add(user);
         }
       }
 
-      return promoters;
-    }
-
-    public async Task<List<User>> GetPassives()
-    {
-      List<Answer> answersList = await _answersRepository.GetAnswers();
-
-      List<Answer> passiveAnswers = answersList.Where(answer => answer.Grade > 6 && answer.Grade < 9).ToList();
-
-      List<User> passives = new List<User>();
-
-      foreach (Answer answer in passiveAnswers)
-      {
-        User? user = await _userRepository.GetUserById(answer.UserId);
-
-        if (user != null)
-        {
-          if (passives.Find(x => x.Name == user.Name) == null)
-          {
-            passives.Add(user);
-          }
-        }
-      }
-
-      return passives;
-    }
-
-    public async Task<List<User>> GetDetractors()
-    {
-      List<Answer> answersList = await _answersRepository.GetAnswers();
-
-      List<Answer> detractorAnswers = answersList.Where(answer => answer.Grade <= 6).ToList();
-
-      List<User> detractors = new List<User>();
-
-      foreach (Answer answer in detractorAnswers)
-      {
-        User? user = await _userRepository.GetUserById(answer.UserId);
-
-        if (user != null)
-        {
-          if (detractors.Find(x => x.Name == user.Name) == null)
-          {
-            detractors.Add(user);
-          }
-        }
-      }
-
-      return detractors;
+      return users;
     }
   }
 }

@@ -24,7 +24,7 @@ namespace NpsApi.Presentation.Controllers
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpGet("User/{userId}")]
+    [HttpGet("User:{userId}")]
     public async Task<ActionResult<List<Answer>>> GetByUserId(int userId)
     {
       return Ok(await _answerService.GetAnswersByUserId(userId));

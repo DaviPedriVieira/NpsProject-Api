@@ -39,17 +39,17 @@ namespace NpsApi.Application.Services
 
     public async Task<List<User>> GetPromoters()
     {
-      return await _userCommandHandler.GetPromoters();
+      return await _userCommandHandler.GetUsersAccordingAnswersGradeRange(9, 10);
     }
 
     public async Task<List<User>> GetPassives()
     {
-      return await _userCommandHandler.GetPassives();
+      return await _userCommandHandler.GetUsersAccordingAnswersGradeRange(7, 8);
     }
 
     public async Task<List<User>> GetDetractors()
     {
-      return await _userCommandHandler.GetDetractors();
+      return await _userCommandHandler.GetUsersAccordingAnswersGradeRange(0, 6);
     }
   }
 }
