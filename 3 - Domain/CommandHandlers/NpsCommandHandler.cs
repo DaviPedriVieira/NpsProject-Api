@@ -22,9 +22,9 @@ namespace NpsApi._3___Domain.CommandHandlers
       float porcentagemDetractors = (float)detractors.Count / answersList.Count * 100;
       float porcentagemPromoters = (float)promoters.Count / answersList.Count * 100;
 
-      float score = porcentagemPromoters - porcentagemDetractors;
+      float npsScore = porcentagemPromoters - porcentagemDetractors;
 
-      return Convert.ToInt32(score);
+      return Convert.ToInt32(npsScore);
     }
   }
 }

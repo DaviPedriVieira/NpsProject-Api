@@ -1,4 +1,3 @@
-using NpsApi._3___Domain.Models;
 using NpsApi.Models;
 using NpsApi.Repositories;
 
@@ -17,28 +16,31 @@ namespace NpsApi._3___Domain.CommandHandlers
       _questionsRepository = questionsRepository;
     }
 
-    public async Task<Answer> SubmitAnswer(Answer answer)
+    public async Task<List<Answer>> SubmitAnswers(List<Answer> answers)
     {
-      if (answer.Grade < 0 || answer.Grade > 10)
+      foreach (Answer answer in answers)
       {
-        throw new ArgumentOutOfRangeException("answer.Grade", "Nota inválida!");
+        if (answer.Grade < 0 || answer.Grade > 10)
+        {
+          throw new ArgumentOutOfRangeException("answer.Grade", "Nota inválida!");
+        }
+
+        Question? question = await _questionsRepository.GetQuestionById(answer.QuestionId);
+
+        if (question is null)
+        {
+          throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhuma pergunta com o Id = {answer.QuestionId}!");
+        }
+
+        User? user = await _usersRepository.GetUserById(answer.UserId);
+
+        if (user is null)
+        {
+          throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhum usuário com o Id = {answer.UserId}!");
+        }
       }
 
-      Question? question = await _questionsRepository.GetQuestionById(answer.QuestionId);
-
-      if (question is null)
-      {
-        throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhuma pergunta com o Id = {answer.QuestionId}!");
-      }
-
-      User? user = await _usersRepository.GetUserById(answer.UserId);
-
-      if (user is null)
-      {
-        throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhum usuário com o Id = {answer.UserId}!");
-      }
-
-      return await _answersRepository.SubmitAnswer(answer);
+      return await _answersRepository.SubmitAnswers(answers);
     }
 
     public async Task<List<Answer>> GetAnswersByUserId(int userId)

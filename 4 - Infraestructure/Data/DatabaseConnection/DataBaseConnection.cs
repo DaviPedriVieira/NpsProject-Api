@@ -4,16 +4,16 @@ namespace NpsApi.Data
 {
   public class DatabaseConnection
   {
-    private readonly string _connectionString;
+    private readonly string _databaseConnectionString;
 
     public DatabaseConnection(string sqlConnectionString)
     {
-      _connectionString = sqlConnectionString;
+      _databaseConnectionString = sqlConnectionString;
     }
 
     public SqlConnection GetConnectionString()
     {
-      return new SqlConnection(_connectionString);
+      return new SqlConnection(_databaseConnectionString);
     }
   }
 }

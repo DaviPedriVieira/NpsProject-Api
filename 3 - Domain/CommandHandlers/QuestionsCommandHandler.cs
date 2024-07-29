@@ -66,16 +66,11 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new KeyNotFoundException($"Não foi encontrada nenhuma pergunta com o Id = {id}!");
       }
 
-      if (question.Answers.Count > 0)
-      {
-        await _answersRepository.DeleteAnswersByQuestionId(id);
-      }
+      await _answersRepository.DeleteAnswersByQuestionId(id);
 
       bool deleted = await _questionsRepository.DeleteQuestion(id);
 
-      string message = deleted ? "Pergunta excluída!" : "Não foi possível excluir a pergunta!";
-
-      return message;
+      return deleted ? "Pergunta excluída!" : "Não foi possível excluir a pergunta!";
     }
 
     public async Task<string> UpdateQuestion(int id, Question question)
@@ -87,13 +82,6 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
-      Form? form = await _formsRepository.GetFormById(question.FormId);
-
-      if (form is null)
-      {
-        throw new KeyNotFoundException($"Erro na Fk question.FormId, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
-      }
-
       if (string.IsNullOrWhiteSpace(question.Content))
       {
         throw new ArgumentNullException("question.Content", "O nome não pode ser vazio!");
@@ -101,9 +89,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool updated = await _questionsRepository.UpdateQuestion(id, question);
 
-      string message = updated ? "Pergunta editada!" : "Não foi possível editar a pergunta!";
-
-      return message;
+      return updated ? "Pergunta editada!" : "Não foi possível editar a pergunta!";
     }
   }
 }

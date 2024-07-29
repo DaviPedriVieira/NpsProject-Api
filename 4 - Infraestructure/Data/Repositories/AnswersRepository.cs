@@ -7,40 +7,44 @@ namespace NpsApi.Repositories
 {
   public class AnswersRepository
   {
-    private readonly DatabaseConnection _connection;
+    private readonly DatabaseConnection _databaseConnection;
 
     public AnswersRepository(DatabaseConnection sqlConnection)
     {
-      _connection = sqlConnection;
+      _databaseConnection = sqlConnection;
     }
 
-    public async Task<Answer> SubmitAnswer(Answer answer)
+    public async Task<List<Answer>> SubmitAnswers(List<Answer> answers)
     {
-      using(SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
-        answer.Date = DateTime.Now;
-
         string query = "INSERT INTO respostas (idPergunta, idUsuario, resposta, descricao, dataHora) VALUES (@QuestionId, @UserId, @Grade, @Description, @Date); SELECT SCOPE_IDENTITY();";
 
-        using(SqlCommand sqlCommand = new SqlCommand (query, sqlConnection))
+        foreach (Answer answer in answers)
         {
-          sqlCommand.Parameters.AddWithValue("@QuestionId", answer.QuestionId);
-          sqlCommand.Parameters.AddWithValue("@UserId", answer.UserId);
-          sqlCommand.Parameters.AddWithValue("@Grade", answer.Grade);
-          sqlCommand.Parameters.AddWithValue("@Description", answer.Description);
-          sqlCommand.Parameters.AddWithValue("@Date", answer.Date);
+          answer.Date = DateTime.Now;
 
-          answer.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
-          return answer;
+          using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+          {
+            sqlCommand.Parameters.AddWithValue("@QuestionId", answer.QuestionId);
+            sqlCommand.Parameters.AddWithValue("@UserId", answer.UserId);
+            sqlCommand.Parameters.AddWithValue("@Grade", answer.Grade);
+            sqlCommand.Parameters.AddWithValue("@Description", answer.Description);
+            sqlCommand.Parameters.AddWithValue("@Date", answer.Date);
+
+            answer.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
+          }
         }
+
+        return answers;
       }
     }
 
     public async Task<List<Answer>> GetAnswersByUserId(int userId)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -77,7 +81,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Answer>> GetAnswers()
     {
-      using(SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -85,11 +89,11 @@ namespace NpsApi.Repositories
 
         List<Answer> answersList = new List<Answer>();
 
-        using(SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
+        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          using(SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
+          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
-            while(await sqlDataReader.ReadAsync())
+            while (await sqlDataReader.ReadAsync())
             {
               Answer answer = new Answer
               {
@@ -105,14 +109,14 @@ namespace NpsApi.Repositories
             }
           }
         }
-        
+
         return answersList;
       }
     }
 
     public async Task<Answer?> GetAnswerById(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -145,9 +149,9 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task DeleteAnswersByQuestionId(int questionId)
+    public async Task<bool> DeleteAnswersByQuestionId(int questionId)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -158,6 +162,8 @@ namespace NpsApi.Repositories
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
           sqlCommand.Parameters.AddWithValue("@QuestionId", questionId);
+
+          return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
     }

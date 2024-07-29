@@ -7,16 +7,16 @@ namespace NpsApi.Repositories
 {
   public class QuestionsRepository
   {
-    private readonly DatabaseConnection _connection;
+    private readonly DatabaseConnection _databaseConnection;
 
     public QuestionsRepository(DatabaseConnection sqlConnection)
     {
-      _connection = sqlConnection;
+      _databaseConnection = sqlConnection;
     }
 
     public async Task<Question> CreateQuestion(Question question)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -35,7 +35,7 @@ namespace NpsApi.Repositories
 
     public async Task<Question?> GetQuestionById(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -68,7 +68,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Question>> GetQuestions()
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -101,7 +101,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteQuestion(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -118,7 +118,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> UpdateQuestion(int id, Question question)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -136,7 +136,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Question>> GetQuestionsByFormId(int formId)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 

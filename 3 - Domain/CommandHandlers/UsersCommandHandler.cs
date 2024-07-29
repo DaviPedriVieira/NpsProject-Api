@@ -47,11 +47,12 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (usersList.Count == 0)
       {
-        throw new Exception("Não há perguntas cadastradas!");
+        throw new Exception("Não há usuários cadastrados!");
       }
 
       return usersList;
     }
+
 
     public async Task<User> GetUserById(int id)
     {
@@ -74,6 +75,11 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new ArgumentException("Não há usuários com este nome e senha!");
       }
 
+      if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+      {
+        return "Usuário já está logado!";
+      }
+
       List<Claim> claims = new List<Claim> {
          new Claim(ClaimTypes.Name, user.Name),
          new Claim(ClaimTypes.Role, user.Type.ToString())
@@ -89,7 +95,6 @@ namespace NpsApi._3___Domain.CommandHandlers
           new AuthenticationProperties
           {
             AllowRefresh = true,
-            IsPersistent = true,
           });
 
         return "Login realizado!";
@@ -114,9 +119,9 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       List<User> users = new List<User>();
 
-      List<Answer> answersList = await _answersRepository.GetAnswers();
+      List<Answer> answers = await _answersRepository.GetAnswers();
 
-      List<Answer> answersFilteredAccordingGrade = answersList.Where(answer => answer.Grade >= minValue && answer.Grade <= maxValue).ToList();
+      List<Answer> answersFilteredAccordingGrade = answers.Where(answer => answer.Grade >= minValue && answer.Grade <= maxValue).ToList();
 
       foreach (Answer answer in answersFilteredAccordingGrade)
       {

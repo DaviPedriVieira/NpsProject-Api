@@ -24,7 +24,7 @@ namespace NpsApi.Presentation.Controllers
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpGet("User:{userId}")]
+    [HttpGet("User/{userId}")]
     public async Task<ActionResult<List<Answer>>> GetByUserId(int userId)
     {
       return Ok(await _answerService.GetAnswersByUserId(userId));
@@ -39,9 +39,9 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Answer>> SubmitAnswer(Answer answer)
+    public async Task<ActionResult<Answer>> SubmitAnswers(List<Answer> answers)
     {
-      return Ok(await _answerService.SubmitAnswer(answer));
+      return Ok(await _answerService.SubmitAnswers(answers));
     }
   }
 }

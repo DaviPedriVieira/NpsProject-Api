@@ -27,7 +27,6 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<User>> Get()
     {
-      Console.WriteLine(DateTime.Now);
       return Ok(await _usersService.GetUsers());
     }
 

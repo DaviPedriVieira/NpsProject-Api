@@ -76,10 +76,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
         foreach (Question question in questionsList)
         {
-          if(question.Answers.Count > 0)
-          {
-            await _answersRepository.DeleteAnswersByQuestionId(question.Id);
-          }
+          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
 
           await _questionsRepository.DeleteQuestion(question.Id);
         }
@@ -89,9 +86,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool deleted = await _formsGroupsRepository.DeleteGroup(id);
 
-      string message = deleted ? "Grupo excluído!" : "Não foi possível excluir o grupo!";
-
-      return message;
+      return deleted ? "Grupo excluído!" : "Não foi possível excluir o grupo!";
     }
 
     public async Task<string> UpdateGroup(int id, FormsGroup group)
@@ -110,9 +105,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool updated = await _formsGroupsRepository.UpdateGroup(id, group);
 
-      string message = updated ? "Grupo editado!" : "Não foi possível editar o grupo!";
-
-      return message;
+      return updated ? "Grupo editado!" : "Não foi possível editar o grupo!";
     }
   }
 }

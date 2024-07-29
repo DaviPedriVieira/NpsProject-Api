@@ -8,16 +8,16 @@ namespace NpsApi.Repositories
 {
   public class UsersRepository
   {
-    private readonly DatabaseConnection _connection;
+    private readonly DatabaseConnection _databaseConnection;
 
     public UsersRepository(DatabaseConnection sqlConnection)
     {
-      _connection = sqlConnection;
+      _databaseConnection = sqlConnection;
     }
 
     public async Task<User> CreateUser(User user)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -37,7 +37,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<User>> GetUsers()
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -70,7 +70,7 @@ namespace NpsApi.Repositories
 
     public async Task<User?> GetUserById(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 

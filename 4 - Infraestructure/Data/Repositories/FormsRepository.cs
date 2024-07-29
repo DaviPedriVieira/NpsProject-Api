@@ -7,16 +7,16 @@ namespace NpsApi.Repositories
 {
   public class FormsRepository
   {
-    private readonly DatabaseConnection _connection;
+    private readonly DatabaseConnection _databaseConnection;
 
     public FormsRepository(DatabaseConnection sqlConnection)
     {
-      _connection = sqlConnection;
+      _databaseConnection = sqlConnection;
     }
 
     public async Task<Form> CreateForm(Form form)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -35,7 +35,7 @@ namespace NpsApi.Repositories
 
     public async Task<Form?> GetFormById(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -68,7 +68,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Form>> GetForms()
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -101,7 +101,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteForm(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -118,7 +118,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> UpdateForm(int id, Form form)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -136,7 +136,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<Form>> GetFormsByGroupId(int groupId)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 

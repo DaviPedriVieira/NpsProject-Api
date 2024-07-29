@@ -12,9 +12,9 @@ namespace NpsApi.Application.Services
       _answersCommandHandler = answersCommandHandler;
     }
 
-    public async Task<Answer> SubmitAnswer(Answer answer)
+    public async Task<List<Answer>> SubmitAnswers(List<Answer> answers)
     {
-      return await _answersCommandHandler.SubmitAnswer(answer);
+      return await _answersCommandHandler.SubmitAnswers(answers);
     }
 
     public async Task<List<Answer>> GetAnswersByUserId(int userId)

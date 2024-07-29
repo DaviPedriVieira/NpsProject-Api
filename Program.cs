@@ -44,6 +44,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 {
   options.Cookie.Name = "NpsProject.AuthCookie";
   options.ExpireTimeSpan = TimeSpan.FromHours(4);
+  options.SlidingExpiration = true;
 });
 
 builder.Services.AddAuthorization(options =>

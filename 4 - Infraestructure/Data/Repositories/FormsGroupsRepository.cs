@@ -7,16 +7,16 @@ namespace NpsApi.Repositories
 {
   public class FormsGroupsRepository
   {
-    private readonly DatabaseConnection _connection;
+    private readonly DatabaseConnection _databaseConnection;
 
     public FormsGroupsRepository(DatabaseConnection sqlConnection)
     {
-      _connection = sqlConnection;
+      _databaseConnection = sqlConnection;
     }
 
     public async Task<FormsGroup> CreateGroup(FormsGroup group)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -34,7 +34,7 @@ namespace NpsApi.Repositories
 
     public async Task<FormsGroup?> GetGroupById(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -66,7 +66,7 @@ namespace NpsApi.Repositories
 
     public async Task<List<FormsGroup>> GetGroups()
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -98,7 +98,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> DeleteGroup(int id)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
@@ -115,7 +115,7 @@ namespace NpsApi.Repositories
 
     public async Task<bool> UpdateGroup(int id, FormsGroup group)
     {
-      using (SqlConnection sqlConnection = _connection.GetConnectionString())
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 

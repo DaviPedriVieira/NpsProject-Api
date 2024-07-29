@@ -47,7 +47,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       Form? form = await _formsRepository.GetFormById(id);
 
-      if(form is null)
+      if (form is null)
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
@@ -82,19 +82,14 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       foreach (Question question in questionsList)
       {
-        if (question.Answers.Count > 0)
-        {
-          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
-        }
+        await _answersRepository.DeleteAnswersByQuestionId(question.Id);
 
         await _questionsRepository.DeleteQuestion(question.Id);
       }
 
       bool deleted = await _formsRepository.DeleteForm(id);
 
-      string message = deleted ? "Formulário excluído!" : "Não foi possível excluir o formulário!";
-
-      return message;
+      return deleted ? "Formulário excluído!" : "Não foi possível excluir o formulário!";
     }
 
     public async Task<string> UpdateForm(int id, Form form)
@@ -106,13 +101,6 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
-      FormsGroup? group = await _formsGroupsRepository.GetGroupById(form.GroupId);
-
-      if (group is null)
-      {
-        throw new KeyNotFoundException($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
-      }
-
       if (string.IsNullOrWhiteSpace(form.Name))
       {
         throw new ArgumentNullException("form.Name", "O nome não pode ser vazio!");
@@ -120,9 +108,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       bool updated = await _formsRepository.UpdateForm(id, form);
 
-      string message = updated ? "Formulário editado!" : "Não foi possível editar o formulário!";
-
-      return message;
+      return updated ? "Formulário editado!" : "Não foi possível editar o formulário!";
     }
   }
 }
