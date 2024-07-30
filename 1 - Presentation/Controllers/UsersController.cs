@@ -40,6 +40,11 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost("Login")]
     public async Task<ActionResult> Login(string name, string password)
     {
+      if (HttpContext.User.Identity.IsAuthenticated)
+      {
+        return Ok("Usuário já logado!");
+      }
+
       return Ok(await _usersService.Login(name, password));
     }
 

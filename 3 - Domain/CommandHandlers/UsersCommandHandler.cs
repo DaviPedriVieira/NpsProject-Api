@@ -75,14 +75,10 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new ArgumentException("Não há usuários com este nome e senha!");
       }
 
-      if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-      {
-        return "Usuário já está logado!";
-      }
-
       List<Claim> claims = new List<Claim> {
          new Claim(ClaimTypes.Name, user.Name),
-         new Claim(ClaimTypes.Role, user.Type.ToString())
+         new Claim(ClaimTypes.Role, user.Type.ToString()),
+         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
       };
 
       ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

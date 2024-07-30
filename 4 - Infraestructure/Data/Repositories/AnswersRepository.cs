@@ -20,24 +20,29 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "INSERT INTO respostas (idPergunta, idUsuario, resposta, descricao, dataHora) VALUES (@QuestionId, @UserId, @Grade, @Description, @Date); SELECT SCOPE_IDENTITY();";
+        DataTable answersTable = new DataTable();
+        answersTable.TableName = "dbo.respostas";
+        answersTable.Columns.Add("questionId", typeof(int));
+        answersTable.Columns.Add("userId", typeof(int));
+        answersTable.Columns.Add("grade", typeof(int));
+        answersTable.Columns.Add("description", typeof(string));
+        answersTable.Columns.Add("date", typeof(DateTime));
 
         foreach (Answer answer in answers)
         {
           answer.Date = DateTime.Now;
-
-          using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-          {
-            sqlCommand.Parameters.AddWithValue("@QuestionId", answer.QuestionId);
-            sqlCommand.Parameters.AddWithValue("@UserId", answer.UserId);
-            sqlCommand.Parameters.AddWithValue("@Grade", answer.Grade);
-            sqlCommand.Parameters.AddWithValue("@Description", answer.Description);
-            sqlCommand.Parameters.AddWithValue("@Date", answer.Date);
-
-            answer.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
-          }
+          answersTable.Rows.Add(answer.QuestionId, answer.UserId, answer.Grade, answer.Description, answer.Date);
         }
 
+        SqlBulkCopy bulk = new SqlBulkCopy(sqlConnection);
+        bulk.DestinationTableName = answersTable.TableName;
+        bulk.ColumnMappings.Add("questionId", "idPergunta");
+        bulk.ColumnMappings.Add("userId", "idUsuario");
+        bulk.ColumnMappings.Add("grade", "resposta");
+        bulk.ColumnMappings.Add("description", "descricao");
+        bulk.ColumnMappings.Add("date", "dataHora");
+
+        await bulk.WriteToServerAsync(answersTable);
         return answers;
       }
     }
@@ -48,14 +53,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM  respostas WHERE idUsuario = @UserId";
+        string query = $"SELECT * FROM respostas WHERE idUsuario = {userId}";
 
         List<Answer> answersList = new List<Answer>();
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@UserId", userId);
-
           using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
             while (await sqlDataReader.ReadAsync())
@@ -85,7 +88,7 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM  respostas";
+        string query = "SELECT * FROM respostas";
 
         List<Answer> answersList = new List<Answer>();
 
@@ -120,14 +123,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM respostas WHERE id = @Id";
+        string query = $"SELECT * FROM respostas WHERE id = {id}";
 
         Answer? answer = null;
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-
           using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
             if (await sqlDataReader.ReadAsync())
@@ -155,14 +156,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "DELETE FROM respostas WHERE idPergunta = @QuestionId";
+        string query = $"DELETE FROM respostas WHERE idPergunta = {questionId}";
 
         List<Answer> answersList = new List<Answer>();
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@QuestionId", questionId);
-
           return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }

@@ -21,14 +21,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "INSERT INTO usuarios (nome, senha, tipo) VALUES (@Name, @Password, @Type); SELECT SCOPE_IDENTITY();";
+        string query = $"INSERT INTO usuarios (nome, senha, tipo) VALUES ('{user.Name}', '{user.Password}', '{user.Type}'); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Name", user.Name);
-          sqlCommand.Parameters.AddWithValue("@Password", user.Password);
-          sqlCommand.Parameters.AddWithValue("@Type", user.Type.ToString());
-
           user.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
           return user;
         }
@@ -74,14 +70,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM usuarios WHERE id = @Id";
+        string query = $"SELECT * FROM usuarios WHERE id = {id}";
 
         User? user = null;
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-
           using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
             if (await sqlDataReader.ReadAsync())
@@ -100,6 +94,5 @@ namespace NpsApi.Repositories
         }
       }
     }
-
   }
 }

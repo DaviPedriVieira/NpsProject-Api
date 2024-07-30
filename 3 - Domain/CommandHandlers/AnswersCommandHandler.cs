@@ -1,5 +1,6 @@
 using NpsApi.Models;
 using NpsApi.Repositories;
+using System.Security.Claims;
 
 namespace NpsApi._3___Domain.CommandHandlers
 {
@@ -8,16 +9,22 @@ namespace NpsApi._3___Domain.CommandHandlers
     private readonly AnswersRepository _answersRepository;
     private readonly UsersRepository _usersRepository;
     private readonly QuestionsRepository _questionsRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AnswersCommandHandler(AnswersRepository answersRepository, UsersRepository usersRepository, QuestionsRepository questionsRepository)
+    public AnswersCommandHandler(AnswersRepository answersRepository, UsersRepository usersRepository, QuestionsRepository questionsRepository, IHttpContextAccessor httpContextAccessor)
     {
       _answersRepository = answersRepository;
       _usersRepository = usersRepository;
       _questionsRepository = questionsRepository;
+      _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<List<Answer>> SubmitAnswers(List<Answer> answers)
     {
+      string stringUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+      int idUser = Convert.ToInt32(stringUserId);
+
       foreach (Answer answer in answers)
       {
         if (answer.Grade < 0 || answer.Grade > 10)
@@ -32,12 +39,7 @@ namespace NpsApi._3___Domain.CommandHandlers
           throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhuma pergunta com o Id = {answer.QuestionId}!");
         }
 
-        User? user = await _usersRepository.GetUserById(answer.UserId);
-
-        if (user is null)
-        {
-          throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhum usuário com o Id = {answer.UserId}!");
-        }
+        answer.UserId = idUser;
       }
 
       return await _answersRepository.SubmitAnswers(answers);

@@ -20,13 +20,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "INSERT INTO formularios (nome, idGrupo) VALUES (@Name, @GroupId); SELECT SCOPE_IDENTITY();";
+        string query = $"INSERT INTO formularios (nome, idGrupo) VALUES ('{form.Name}', {form.GroupId}); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Name", form.Name);
-          sqlCommand.Parameters.AddWithValue("@GroupId", form.GroupId);
-
           form.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
           return form;
         }
@@ -39,14 +36,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM formularios WHERE id = @Id";
+        string query = $"SELECT * FROM formularios WHERE id = {id}";
 
         Form? form = null;
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-
           using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
             if (await sqlDataReader.ReadAsync())
@@ -105,12 +100,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "DELETE FROM formularios WHERE id = @Id";
+        string query = $"DELETE FROM formularios WHERE id = {id}";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-
           return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
@@ -122,13 +115,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "UPDATE formularios SET nome = @Name WHERE id = @Id";
+        string query = $"UPDATE formularios SET nome = '{form.Name}' WHERE id = {id}";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-          sqlCommand.Parameters.AddWithValue("@Name", form.Name);
-
           return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
@@ -140,14 +130,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM formularios WHERE idGrupo = @GroupId";
+        string query = $"SELECT * FROM formularios WHERE idGrupo = {groupId}";
 
         List<Form> formsList = new List<Form>();
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@GroupId", groupId);
-
           using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
           {
             while (await sqlDataReader.ReadAsync())
@@ -168,6 +156,5 @@ namespace NpsApi.Repositories
         return formsList;
       }
     }
-
   }
 }

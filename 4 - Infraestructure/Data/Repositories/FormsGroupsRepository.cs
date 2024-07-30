@@ -20,12 +20,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "INSERT INTO grupoFormularios (nome) VALUES (@Name); SELECT SCOPE_IDENTITY();";
+        string query = $"INSERT INTO grupoFormularios (nome) VALUES ('{group.Name}'); SELECT SCOPE_IDENTITY();";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Name", group.Name);
-
           group.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
           return group;
         }
@@ -38,14 +36,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM grupoFormularios WHERE id = @Id";
+        string query = $"SELECT * FROM grupoFormularios WHERE id = {id}";
 
         FormsGroup? group = null;
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-
           using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync()) 
           {
             if (await sqlDataReader.ReadAsync())
@@ -102,12 +98,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "DELETE FROM grupoFormularios WHERE id = @Id";
+        string query = $"DELETE FROM grupoFormularios WHERE id = {id}";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-
           return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
@@ -119,13 +113,10 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = "UPDATE grupoFormularios SET nome = @Name WHERE id = @Id";
+        string query = $"UPDATE grupoFormularios SET nome = '{group.Name}' WHERE id = {id}";
 
         using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
         {
-          sqlCommand.Parameters.AddWithValue("@Id", id);
-          sqlCommand.Parameters.AddWithValue("@Name", group.Name);
-
           return await sqlCommand.ExecuteNonQueryAsync() > 0;
         }
       }
