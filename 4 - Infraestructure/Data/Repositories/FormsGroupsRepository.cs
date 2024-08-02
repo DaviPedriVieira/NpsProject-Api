@@ -20,13 +20,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = $"INSERT INTO grupoFormularios (nome) VALUES ('{group.Name}'); SELECT SCOPE_IDENTITY();";
+        string query = $"INSERT INTO grupoFormularios VALUES ('{group.Name}'); SELECT SCOPE_IDENTITY();";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          group.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
-          return group;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        group.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
+        return group;
       }
     }
 
@@ -40,23 +39,21 @@ namespace NpsApi.Repositories
 
         FormsGroup? group = null;
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync()) 
-          {
-            if (await sqlDataReader.ReadAsync())
-            {
-              group = new FormsGroup
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                Name = sqlDataReader.GetString("nome"),
-                Forms = new List<Form>(),
-              };
-            }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-            return group;
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        if (await sqlDataReader.ReadAsync())
+        {
+          group = new FormsGroup
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            Name = sqlDataReader.GetString("nome"),
+            Forms = new List<Form>(),
+          };
         }
+
+        return group;
       }
     }
 
@@ -70,22 +67,20 @@ namespace NpsApi.Repositories
 
         List<FormsGroup> groupsList = new List<FormsGroup>();
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            while (await sqlDataReader.ReadAsync())
-            {
-              FormsGroup group = new FormsGroup
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                Name = sqlDataReader.GetString("nome"),
-                Forms = new List<Form>(),
-              };
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-              groupsList.Add(group);
-            }
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          FormsGroup group = new FormsGroup
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            Name = sqlDataReader.GetString("nome"),
+            Forms = new List<Form>(),
+          };
+
+          groupsList.Add(group);
         }
 
         return groupsList;
@@ -100,10 +95,9 @@ namespace NpsApi.Repositories
 
         string query = $"DELETE FROM grupoFormularios WHERE id = {id}";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          return await sqlCommand.ExecuteNonQueryAsync() > 0;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
       }
     }
 
@@ -115,10 +109,9 @@ namespace NpsApi.Repositories
 
         string query = $"UPDATE grupoFormularios SET nome = '{group.Name}' WHERE id = {id}";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          return await sqlCommand.ExecuteNonQueryAsync() > 0;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
       }
     }
   }

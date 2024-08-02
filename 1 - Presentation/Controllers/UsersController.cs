@@ -17,7 +17,7 @@ namespace NpsApi.Presentation.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult<User>> Create(User user)
+    public async Task<ActionResult<User>> CreateUser(User user)
     {
       return Ok(await _usersService.CreateUser(user));
 
@@ -25,14 +25,14 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet]
-    public async Task<ActionResult<User>> Get()
+    public async Task<ActionResult<User>> GetUsers()
     {
       return Ok(await _usersService.GetUsers());
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> Get(int id)
+    public async Task<ActionResult<User>> GetUserById(int id)
     {
       return Ok(await _usersService.GetUserById(id));
     }
@@ -40,11 +40,6 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost("Login")]
     public async Task<ActionResult> Login(string name, string password)
     {
-      if (HttpContext.User.Identity.IsAuthenticated)
-      {
-        return Ok("Usuário já logado!");
-      }
-
       return Ok(await _usersService.Login(name, password));
     }
 
@@ -71,7 +66,9 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("Detractors")]
-    public async Task<ActionResult<List<User>>> GetDetractors()
+    public async Task<ActionResult<List<User>>>
+
+    GetDetractors()
     {
       return Ok(await _usersService.GetDetractors());
     }

@@ -21,9 +21,9 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<List<Answer>> SubmitAnswers(List<Answer> answers)
     {
-      string stringUserId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+      string userIdString = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-      int idUser = Convert.ToInt32(stringUserId);
+      int activeUserId = Convert.ToInt32(userIdString);
 
       foreach (Answer answer in answers)
       {
@@ -36,10 +36,10 @@ namespace NpsApi._3___Domain.CommandHandlers
 
         if (question is null)
         {
-          throw new KeyNotFoundException($"Erro na FK, não foi encontrado nenhuma pergunta com o Id = {answer.QuestionId}!");
+          throw new KeyNotFoundException($"Erro na FK answer.QuestionId, não foi encontrada nenhuma pergunta com o Id = {answer.QuestionId}!");
         }
 
-        answer.UserId = idUser;
+        answer.UserId = activeUserId;
       }
 
       return await _answersRepository.SubmitAnswers(answers);
@@ -51,14 +51,14 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (user is null)
       {
-        throw new KeyNotFoundException($"Erro na FK answer. UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
+        throw new KeyNotFoundException($"Erro na FK answer.UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
       }
 
       List<Answer> answers = await _answersRepository.GetAnswersByUserId(userId);
 
       if (answers.Count == 0)
       {
-        throw new KeyNotFoundException($"Não foi encontrada nenhuma pergunta do usuário com o Id = {userId}!");
+        throw new KeyNotFoundException($"Não foi encontrada nenhuma resposta do usuário com o Id = {userId}!");
       }
 
       return answers;
@@ -82,7 +82,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (answersList.Count == 0)
       {
-        throw new Exception();
+        throw new Exception("Não há respostas cadastradas!");
       }
 
       return answersList;

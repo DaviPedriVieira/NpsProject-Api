@@ -18,21 +18,21 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet]
-    public async Task<ActionResult<List<Answer>>> Get()
+    public async Task<ActionResult<List<Answer>>> GetAnswers()
     {
       return Ok(await _answerService.GetAnswers());
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("User/{userId}")]
-    public async Task<ActionResult<List<Answer>>> GetByUserId(int userId)
+    public async Task<ActionResult<List<Answer>>> GetAnswersByUserId(int userId)
     {
       return Ok(await _answerService.GetAnswersByUserId(userId));
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
-    public async Task<ActionResult<Answer>> GetById(int id)
+    public async Task<ActionResult<Answer>> GetAnswerById(int id)
     {
       return Ok(await _answerService.GetAnswerById(id));
     }

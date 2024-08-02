@@ -22,10 +22,34 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       if (string.IsNullOrWhiteSpace(group.Name))
       {
-        throw new ArgumentNullException("group.Name", "O nome não pode ser vazio!");
+        throw new Exception("O nome do grupo não pode ser vazio!");
       }
 
-      return await _formsGroupsRepository.CreateGroup(group);
+      FormsGroup newGroup = await _formsGroupsRepository.CreateGroup(group);
+
+      //foreach(Form form in newGroup.Forms)
+      //{
+      //  if (string.IsNullOrWhiteSpace(form.Name))
+      //  {
+      //    throw new ArgumentNullException("form.Name", "O nome não pode ser vazio!");
+      //  }
+
+      //  form.GroupId = newGroup.Id;
+      //  await _formsRepository.CreateForm(form);
+
+      //  foreach(Question question in form.Questions)
+      //  {
+      //    if (string.IsNullOrWhiteSpace(question.Content))
+      //    {
+      //      throw new ArgumentNullException("question.Content", "A pergunta não pode ser vazia!");
+      //    }
+
+      //    question.FormId = form.Id;
+      //    await _questionsRepository.CreateQuestion(question);
+      //  }
+      //}
+
+      return newGroup;
     }
 
     public async Task<FormsGroup> GetGroupById(int id)

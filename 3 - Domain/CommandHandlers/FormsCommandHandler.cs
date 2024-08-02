@@ -36,6 +36,11 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       foreach (Question question in form.Questions)
       {
+        if (string.IsNullOrWhiteSpace(question.Content))
+        {
+          throw new ArgumentNullException("question.Content", "A pergunta não pode ser vazia!");
+        }
+
         question.FormId = newForm.Id;
         await _questionsRepository.CreateQuestion(question);
       }

@@ -21,13 +21,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = $"INSERT INTO usuarios (nome, senha, tipo) VALUES ('{user.Name}', '{user.Password}', '{user.Type}'); SELECT SCOPE_IDENTITY();";
+        string query = $"INSERT INTO usuarios VALUES ('{user.Name}', '{user.Password}', '{user.Type}'); SELECT SCOPE_IDENTITY();";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          user.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
-          return user;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        user.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
+        return user;
       }
     }
 
@@ -41,23 +40,21 @@ namespace NpsApi.Repositories
 
         List<User> usersList = new List<User>();
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            while (await sqlDataReader.ReadAsync())
-            {
-              User user = new User
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                Name = sqlDataReader.GetString("nome"),
-                Password = sqlDataReader.GetString("senha"),
-                Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
-              };
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-              usersList.Add(user);
-            }
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          User user = new User
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            Name = sqlDataReader.GetString("nome"),
+            Password = sqlDataReader.GetString("senha"),
+            Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
+          };
+
+          usersList.Add(user);
         }
 
         return usersList;
@@ -74,24 +71,22 @@ namespace NpsApi.Repositories
 
         User? user = null;
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            if (await sqlDataReader.ReadAsync())
-            {
-              user = new User
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                Name = sqlDataReader.GetString("nome"),
-                Password = sqlDataReader.GetString("senha"),
-                Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
-              };
-            }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-            return user;
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        if (await sqlDataReader.ReadAsync())
+        {
+          user = new User
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            Name = sqlDataReader.GetString("nome"),
+            Password = sqlDataReader.GetString("senha"),
+            Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
+          };
         }
+
+        return user;
       }
     }
   }

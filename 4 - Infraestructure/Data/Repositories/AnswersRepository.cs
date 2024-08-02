@@ -21,7 +21,7 @@ namespace NpsApi.Repositories
         await sqlConnection.OpenAsync();
 
         DataTable answersTable = new DataTable();
-        answersTable.TableName = "dbo.respostas";
+        answersTable.TableName = "respostas";
         answersTable.Columns.Add("questionId", typeof(int));
         answersTable.Columns.Add("userId", typeof(int));
         answersTable.Columns.Add("grade", typeof(int));
@@ -30,19 +30,18 @@ namespace NpsApi.Repositories
 
         foreach (Answer answer in answers)
         {
-          answer.Date = DateTime.Now;
-          answersTable.Rows.Add(answer.QuestionId, answer.UserId, answer.Grade, answer.Description, answer.Date);
+          answersTable.Rows.Add(answer.QuestionId, answer.UserId, answer.Grade, answer.Description, DateTime.Now);
         }
 
-        SqlBulkCopy bulk = new SqlBulkCopy(sqlConnection);
-        bulk.DestinationTableName = answersTable.TableName;
-        bulk.ColumnMappings.Add("questionId", "idPergunta");
-        bulk.ColumnMappings.Add("userId", "idUsuario");
-        bulk.ColumnMappings.Add("grade", "resposta");
-        bulk.ColumnMappings.Add("description", "descricao");
-        bulk.ColumnMappings.Add("date", "dataHora");
+        SqlBulkCopy sqlBulk = new SqlBulkCopy(sqlConnection);
+        sqlBulk.DestinationTableName = answersTable.TableName;
+        sqlBulk.ColumnMappings.Add("questionId", "idPergunta");
+        sqlBulk.ColumnMappings.Add("userId", "idUsuario");
+        sqlBulk.ColumnMappings.Add("grade", "resposta");
+        sqlBulk.ColumnMappings.Add("description", "descricao");
+        sqlBulk.ColumnMappings.Add("date", "dataHora");
 
-        await bulk.WriteToServerAsync(answersTable);
+        sqlBulk.WriteToServer(answersTable);
         return answers;
       }
     }
@@ -57,25 +56,23 @@ namespace NpsApi.Repositories
 
         List<Answer> answersList = new List<Answer>();
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            while (await sqlDataReader.ReadAsync())
-            {
-              Answer answer = new Answer
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                QuestionId = sqlDataReader.GetInt32("idPergunta"),
-                UserId = sqlDataReader.GetInt32("idUsuario"),
-                Grade = sqlDataReader.GetInt32("resposta"),
-                Description = sqlDataReader.GetString("descricao"),
-                Date = sqlDataReader.GetDateTime("dataHora"),
-              };
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-              answersList.Add(answer);
-            }
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          Answer answer = new Answer
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            QuestionId = sqlDataReader.GetInt32("idPergunta"),
+            UserId = sqlDataReader.GetInt32("idUsuario"),
+            Grade = sqlDataReader.GetInt32("resposta"),
+            Description = sqlDataReader.GetString("descricao"),
+            Date = sqlDataReader.GetDateTime("dataHora"),
+          };
+
+          answersList.Add(answer);
         }
 
         return answersList;
@@ -92,25 +89,23 @@ namespace NpsApi.Repositories
 
         List<Answer> answersList = new List<Answer>();
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            while (await sqlDataReader.ReadAsync())
-            {
-              Answer answer = new Answer
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                QuestionId = sqlDataReader.GetInt32("idPergunta"),
-                UserId = sqlDataReader.GetInt32("idUsuario"),
-                Grade = sqlDataReader.GetInt32("resposta"),
-                Description = sqlDataReader.GetString("descricao"),
-                Date = sqlDataReader.GetDateTime("dataHora"),
-              };
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-              answersList.Add(answer);
-            }
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          Answer answer = new Answer
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            QuestionId = sqlDataReader.GetInt32("idPergunta"),
+            UserId = sqlDataReader.GetInt32("idUsuario"),
+            Grade = sqlDataReader.GetInt32("resposta"),
+            Description = sqlDataReader.GetString("descricao"),
+            Date = sqlDataReader.GetDateTime("dataHora"),
+          };
+
+          answersList.Add(answer);
         }
 
         return answersList;
@@ -127,26 +122,24 @@ namespace NpsApi.Repositories
 
         Answer? answer = null;
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            if (await sqlDataReader.ReadAsync())
-            {
-              answer = new Answer
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                QuestionId = sqlDataReader.GetInt32("idPergunta"),
-                UserId = sqlDataReader.GetInt32("idUsuario"),
-                Grade = sqlDataReader.GetInt32("resposta"),
-                Description = sqlDataReader.GetString("descricao"),
-                Date = sqlDataReader.GetDateTime("dataHora"),
-              };
-            }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-            return answer;
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        if (await sqlDataReader.ReadAsync())
+        {
+          answer = new Answer
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            QuestionId = sqlDataReader.GetInt32("idPergunta"),
+            UserId = sqlDataReader.GetInt32("idUsuario"),
+            Grade = sqlDataReader.GetInt32("resposta"),
+            Description = sqlDataReader.GetString("descricao"),
+            Date = sqlDataReader.GetDateTime("dataHora"),
+          };
         }
+
+        return answer;
       }
     }
 
@@ -158,12 +151,9 @@ namespace NpsApi.Repositories
 
         string query = $"DELETE FROM respostas WHERE idPergunta = {questionId}";
 
-        List<Answer> answersList = new List<Answer>();
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          return await sqlCommand.ExecuteNonQueryAsync() > 0;
-        }
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
       }
     }
   }

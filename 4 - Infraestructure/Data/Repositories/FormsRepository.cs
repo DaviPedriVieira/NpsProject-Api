@@ -20,13 +20,12 @@ namespace NpsApi.Repositories
       {
         await sqlConnection.OpenAsync();
 
-        string query = $"INSERT INTO formularios (nome, idGrupo) VALUES ('{form.Name}', {form.GroupId}); SELECT SCOPE_IDENTITY();";
+        string query = $"INSERT INTO formularios VALUES ({form.GroupId}, '{form.Name}'); SELECT SCOPE_IDENTITY();";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          form.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
-          return form;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        form.Id  = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
+        return form;
       }
     }
 
@@ -40,24 +39,22 @@ namespace NpsApi.Repositories
 
         Form? form = null;
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            if (await sqlDataReader.ReadAsync())
-            {
-              form = new Form
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                GroupId = sqlDataReader.GetInt32("idGrupo"),
-                Name = sqlDataReader.GetString("nome"),
-                Questions = new List<Question>(),
-              };
-            }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-            return form;
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        if (await sqlDataReader.ReadAsync())
+        {
+          form = new Form
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            GroupId = sqlDataReader.GetInt32("idGrupo"),
+            Name = sqlDataReader.GetString("nome"),
+            Questions = new List<Question>(),
+          };
         }
+
+        return form;
       }
     }
 
@@ -71,23 +68,21 @@ namespace NpsApi.Repositories
 
         List<Form> formsList = new List<Form>();
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            while (await sqlDataReader.ReadAsync())
-            {
-              Form form = new Form
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                GroupId = sqlDataReader.GetInt32("idGrupo"),
-                Name = sqlDataReader.GetString("nome"),
-                Questions = new List<Question>(),
-              };
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-              formsList.Add(form);
-            }
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          Form form = new Form
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            GroupId = sqlDataReader.GetInt32("idGrupo"),
+            Name = sqlDataReader.GetString("nome"),
+            Questions = new List<Question>(),
+          };
+
+          formsList.Add(form);
         }
 
         return formsList;
@@ -102,10 +97,9 @@ namespace NpsApi.Repositories
 
         string query = $"DELETE FROM formularios WHERE id = {id}";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          return await sqlCommand.ExecuteNonQueryAsync() > 0;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
       }
     }
 
@@ -117,10 +111,9 @@ namespace NpsApi.Repositories
 
         string query = $"UPDATE formularios SET nome = '{form.Name}' WHERE id = {id}";
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          return await sqlCommand.ExecuteNonQueryAsync() > 0;
-        }
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
       }
     }
 
@@ -134,23 +127,21 @@ namespace NpsApi.Repositories
 
         List<Form> formsList = new List<Form>();
 
-        using (SqlCommand sqlCommand = new SqlCommand(query, sqlConnection))
-        {
-          using (SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync())
-          {
-            while (await sqlDataReader.ReadAsync())
-            {
-              Form form = new Form
-              {
-                Id = sqlDataReader.GetInt32("id"),
-                GroupId = sqlDataReader.GetInt32("idGrupo"),
-                Name = sqlDataReader.GetString("nome"),
-                Questions = new List<Question>(),
-              };
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
-              formsList.Add(form);
-            }
-          }
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          Form form = new Form
+          {
+            Id = sqlDataReader.GetInt32("id"),
+            GroupId = sqlDataReader.GetInt32("idGrupo"),
+            Name = sqlDataReader.GetString("nome"),
+            Questions = new List<Question>(),
+          };
+
+          formsList.Add(form);
         }
 
         return formsList;

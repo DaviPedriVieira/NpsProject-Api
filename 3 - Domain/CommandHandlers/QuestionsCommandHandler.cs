@@ -22,7 +22,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (form is null)
       {
-        throw new KeyNotFoundException($"Erro na Fk, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
+        throw new KeyNotFoundException($"Erro na Fk question.FormId, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
       }
 
       if (string.IsNullOrWhiteSpace(question.Content))

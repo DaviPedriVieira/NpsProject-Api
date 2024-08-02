@@ -27,11 +27,11 @@ namespace NpsApi._3___Domain.CommandHandlers
       }
 
       List<User> users = await GetUsers();
-      User? repeatedNameUser = users.Find(User => User.Name == user.Name);
+      User? repeatedNameUser = users.Find(u => u.Name == user.Name);
 
       if (repeatedNameUser != null)
       {
-        throw new ArgumentException(user.Name, "Nome de usuário já existente!");
+        throw new ArgumentException("Nome de usuário já existente!", user.Name);
       }
 
       User createdUser = await _userRepository.CreateUser(user);
@@ -53,7 +53,6 @@ namespace NpsApi._3___Domain.CommandHandlers
       return usersList;
     }
 
-
     public async Task<User> GetUserById(int id)
     {
       User? user = await _userRepository.GetUserById(id);
@@ -62,13 +61,19 @@ namespace NpsApi._3___Domain.CommandHandlers
       {
         throw new KeyNotFoundException($"Não foi encontrado nenhum usuário com o Id = {id}!");
       }
+
       return user;
     }
 
-    public async Task<string> Login(string name, string password)
+    public async Task<string> Login(string username, string password)
     {
+      if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+      {
+        return "Usuário já logado!";
+      }
+
       List<User> usersList = await _userRepository.GetUsers();
-      User? user = usersList.Find(user => user.Name == name && user.Password == password);
+      User? user = usersList.Find(user => user.Name == username && user.Password == password);
 
       if (user is null)
       {
@@ -78,37 +83,21 @@ namespace NpsApi._3___Domain.CommandHandlers
       List<Claim> claims = new List<Claim> {
          new Claim(ClaimTypes.Name, user.Name),
          new Claim(ClaimTypes.Role, user.Type.ToString()),
-         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
       };
 
       ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-      if (_httpContextAccessor.HttpContext != null)
-      {
-        await _httpContextAccessor.HttpContext.SignInAsync(
-          CookieAuthenticationDefaults.AuthenticationScheme,
-          new ClaimsPrincipal(claimsIdentity),
-          new AuthenticationProperties
-          {
-            AllowRefresh = true,
-          });
+      await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-        return "Login realizado!";
-      }
-
-      throw new Exception("Não foi possível realizar o login!");
+      return "Login realizado!";
     }
 
     public async Task<string> Logout()
     {
-      if (_httpContextAccessor.HttpContext != null)
-      {
-        await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+      await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        return "Logout realizado!";
-      }
-
-      throw new Exception("Não foi possível realizar o logout!");
+      return "Logout realizado!";
     }
 
     public async Task<List<User>> GetUsersAccordingAnswersGradeRange(int minValue, int maxValue)
