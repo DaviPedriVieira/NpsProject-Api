@@ -24,23 +24,23 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (group is null)
       {
-        throw new KeyNotFoundException($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
+        throw new Exception($"Erro na FK form.GroupId, não foi encontrado nenhum grupo com o Id = {form.GroupId}!");
       }
 
       if (string.IsNullOrWhiteSpace(form.Name))
       {
-        throw new ArgumentNullException("form.Name", "O nome não pode ser vazio!");
+        throw new Exception("O nome do formulário não pode ser vazio!");
+      }
+
+      if(form.Questions.Where(question => question.Content.Trim() == "").Any())
+      {
+        throw new Exception("Nenhuma pergunta pode ser vazia!");
       }
 
       Form newForm = await _formsRepository.CreateForm(form);
 
       foreach (Question question in form.Questions)
       {
-        if (string.IsNullOrWhiteSpace(question.Content))
-        {
-          throw new ArgumentNullException("question.Content", "A pergunta não pode ser vazia!");
-        }
-
         question.FormId = newForm.Id;
         await _questionsRepository.CreateQuestion(question);
       }
@@ -54,7 +54,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (form is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
+        throw new Exception($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
       form.Questions = await _questionsRepository.GetQuestionsByFormId(form.Id);
@@ -80,7 +80,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (form is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
+        throw new Exception($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
       List<Question> questionsList = await _questionsRepository.GetQuestionsByFormId(id);
@@ -103,12 +103,12 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (toUpdateForm is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum formulário com o Id = {id}!");
+        throw new Exception($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
       if (string.IsNullOrWhiteSpace(form.Name))
       {
-        throw new ArgumentNullException("form.Name", "O nome não pode ser vazio!");
+        throw new Exception("O nome do formulário não pode ser vazio!");
       }
 
       bool updated = await _formsRepository.UpdateForm(id, form);

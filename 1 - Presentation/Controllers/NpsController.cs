@@ -19,7 +19,14 @@ namespace NpsApi._1___Presentation.Controllers
     [HttpGet("NpsScore")]
     public async Task<ActionResult<int>> GetNpsScore()
     {
-      return Ok(await _npsService.GetNpsScore());
+      try
+      {
+        return Ok(await _npsService.GetNpsScore());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
   }
 }

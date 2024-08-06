@@ -29,14 +29,14 @@ namespace NpsApi._3___Domain.CommandHandlers
       {
         if (answer.Grade < 0 || answer.Grade > 10)
         {
-          throw new ArgumentOutOfRangeException("answer.Grade", "Nota inválida!");
+          throw new Exception("Nota inválida!");
         }
 
         Question? question = await _questionsRepository.GetQuestionById(answer.QuestionId);
 
         if (question is null)
         {
-          throw new KeyNotFoundException($"Erro na FK answer.QuestionId, não foi encontrada nenhuma pergunta com o Id = {answer.QuestionId}!");
+          throw new Exception($"Erro na FK answer.QuestionId, não foi encontrada nenhuma pergunta com o Id = {answer.QuestionId}!");
         }
 
         answer.UserId = activeUserId;
@@ -51,14 +51,14 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (user is null)
       {
-        throw new KeyNotFoundException($"Erro na FK answer.UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
+        throw new Exception($"Erro na FK answer.UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
       }
 
       List<Answer> answers = await _answersRepository.GetAnswersByUserId(userId);
 
       if (answers.Count == 0)
       {
-        throw new KeyNotFoundException($"Não foi encontrada nenhuma resposta do usuário com o Id = {userId}!");
+        throw new Exception($"Não foi encontrada nenhuma resposta do usuário com o Id = {userId}!");
       }
 
       return answers;
@@ -70,7 +70,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (answer is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrada nenhuma resposta com o Id = {id}!");
+        throw new Exception($"Não foi encontrada nenhuma resposta com o Id = {id}!");
       }
 
       return answer;

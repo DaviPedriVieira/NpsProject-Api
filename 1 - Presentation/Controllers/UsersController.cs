@@ -19,58 +19,111 @@ namespace NpsApi.Presentation.Controllers
     [HttpPost]
     public async Task<ActionResult<User>> CreateUser(User user)
     {
-      return Ok(await _usersService.CreateUser(user));
-
+      try
+      {
+        return Ok(await _usersService.CreateUser(user));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet]
     public async Task<ActionResult<User>> GetUsers()
     {
-      return Ok(await _usersService.GetUsers());
+      try
+      {
+        return Ok(await _usersService.GetUsers());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUserById(int id)
     {
-      return Ok(await _usersService.GetUserById(id));
+      try
+      {
+        return Ok(await _usersService.GetUserById(id));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [HttpPost("Login")]
     public async Task<ActionResult> Login(string name, string password)
     {
-      return Ok(await _usersService.Login(name, password));
+      try
+      {
+        return Ok(await _usersService.Login(name, password));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize]
     [HttpPost("Logout")]
     public async Task<ActionResult> Logout()
     {
-      return Ok(await _usersService.Logout());
+      try
+      {
+        return Ok(await _usersService.Logout());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("Promoters")]
     public async Task<ActionResult<List<User>>> GetPromoters()
     {
-      return Ok(await _usersService.GetPromoters());
+      try
+      {
+        return Ok(await _usersService.GetPromoters());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("Passives")]
     public async Task<ActionResult<List<User>>> GetPassives()
     {
-      return Ok(await _usersService.GetPassives());
+      try
+      {
+        return Ok(await _usersService.GetPassives());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("Detractors")]
-    public async Task<ActionResult<List<User>>>
-
-    GetDetractors()
+    public async Task<ActionResult<List<User>>> GetDetractors()
     {
-      return Ok(await _usersService.GetDetractors());
+      try
+      {
+        return Ok(await _usersService.GetDetractors());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
   }
 }

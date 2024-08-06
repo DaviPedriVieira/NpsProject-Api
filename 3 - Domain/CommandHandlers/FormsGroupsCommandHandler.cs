@@ -25,29 +25,27 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception("O nome do grupo não pode ser vazio!");
       }
 
+      foreach (Form form in group.Forms)
+      {
+        if (string.IsNullOrWhiteSpace(form.Name) || form.Questions.Where(question => question.Content.Trim() == "").Any())
+        {
+          throw new Exception("Nenhum formulário ou pergunta pode ser vazio!");
+        }
+      }
+
       FormsGroup newGroup = await _formsGroupsRepository.CreateGroup(group);
 
-      //foreach(Form form in newGroup.Forms)
-      //{
-      //  if (string.IsNullOrWhiteSpace(form.Name))
-      //  {
-      //    throw new ArgumentNullException("form.Name", "O nome não pode ser vazio!");
-      //  }
+      foreach (Form form in newGroup.Forms)
+      {
+        form.GroupId = newGroup.Id;
+        await _formsRepository.CreateForm(form);
 
-      //  form.GroupId = newGroup.Id;
-      //  await _formsRepository.CreateForm(form);
-
-      //  foreach(Question question in form.Questions)
-      //  {
-      //    if (string.IsNullOrWhiteSpace(question.Content))
-      //    {
-      //      throw new ArgumentNullException("question.Content", "A pergunta não pode ser vazia!");
-      //    }
-
-      //    question.FormId = form.Id;
-      //    await _questionsRepository.CreateQuestion(question);
-      //  }
-      //}
+        foreach (Question question in form.Questions)
+        {
+          question.FormId = form.Id;
+          await _questionsRepository.CreateQuestion(question);
+        }
+      }
 
       return newGroup;
     }
@@ -58,7 +56,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (group is null)
       {
-        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}!");
+        throw new Exception($"Não existe nenhum grupo com o id = {id}!");
       }
 
       group.Forms = await _formsRepository.GetFormsByGroupId(group.Id);
@@ -89,7 +87,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (group is null)
       {
-        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}!");
+        throw new Exception($"Não existe nenhum grupo com o id = {id}!");
       }
 
       List<Form> formsInsideGroup = await _formsRepository.GetFormsByGroupId(id);
@@ -119,12 +117,12 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (toUpdateGroup is null)
       {
-        throw new KeyNotFoundException($"Não existe nenhum grupo com o id = {id}!");
+        throw new Exception($"Não existe nenhum grupo com o id = {id}!");
       }
 
       if (string.IsNullOrWhiteSpace(group.Name))
       {
-        throw new ArgumentNullException("group.Name", "O nome não pode ser vazio!");
+        throw new Exception("O nome não pode ser vazio!");
       }
 
       bool updated = await _formsGroupsRepository.UpdateGroup(id, group);

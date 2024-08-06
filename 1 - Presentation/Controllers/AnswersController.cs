@@ -20,28 +20,56 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<List<Answer>>> GetAnswers()
     {
-      return Ok(await _answerService.GetAnswers());
+      try
+      {
+        return Ok(await _answerService.GetAnswers());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("User/{userId}")]
     public async Task<ActionResult<List<Answer>>> GetAnswersByUserId(int userId)
     {
-      return Ok(await _answerService.GetAnswersByUserId(userId));
+      try
+      {
+        return Ok(await _answerService.GetAnswersByUserId(userId));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Answer>> GetAnswerById(int id)
     {
-      return Ok(await _answerService.GetAnswerById(id));
+      try
+      {
+        return Ok(await _answerService.GetAnswerById(id));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<Answer>> SubmitAnswers(List<Answer> answers)
     {
-      return Ok(await _answerService.SubmitAnswers(answers));
+      try
+      {
+        return Ok(await _answerService.SubmitAnswers(answers));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
   }
 }

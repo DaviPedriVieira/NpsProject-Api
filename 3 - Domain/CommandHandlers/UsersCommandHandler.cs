@@ -23,7 +23,7 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Password))
       {
-        throw new ArgumentNullException(user.Name, "O nome/senha não podem ser vazios!");
+        throw new Exception("O nome/senha não podem ser vazios!");
       }
 
       List<User> users = await GetUsers();
@@ -31,7 +31,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (repeatedNameUser != null)
       {
-        throw new ArgumentException("Nome de usuário já existente!", user.Name);
+        throw new Exception("Nome de usuário já existente!");
       }
 
       User createdUser = await _userRepository.CreateUser(user);
@@ -59,7 +59,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (user is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhum usuário com o Id = {id}!");
+        throw new Exception($"Não foi encontrado nenhum usuário com o Id = {id}!");
       }
 
       return user;
@@ -77,7 +77,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (user is null)
       {
-        throw new ArgumentException("Não há usuários com este nome e senha!");
+        throw new Exception("Não há usuários com este nome e senha!");
       }
 
       List<Claim> claims = new List<Claim> {
@@ -95,7 +95,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<string> Logout()
     {
-      await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+     await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
       return "Logout realizado!";
     }

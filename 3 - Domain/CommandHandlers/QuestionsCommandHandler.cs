@@ -22,12 +22,12 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (form is null)
       {
-        throw new KeyNotFoundException($"Erro na Fk question.FormId, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
+        throw new Exception($"Erro na Fk question.FormId, não foi encontrado nenhum formulário com o Id = {question.FormId}!");
       }
 
       if (string.IsNullOrWhiteSpace(question.Content))
       {
-        throw new ArgumentNullException("question.Content", "A pergunta não pode ser vazia!");
+        throw new Exception("A pergunta não pode ser vazia!");
       }
 
       return await _questionsRepository.CreateQuestion(question);
@@ -39,7 +39,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (question is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
+        throw new Exception($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
       return question;
@@ -63,7 +63,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (question is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrada nenhuma pergunta com o Id = {id}!");
+        throw new Exception($"Não foi encontrada nenhuma pergunta com o Id = {id}!");
       }
 
       await _answersRepository.DeleteAnswersByQuestionId(id);
@@ -79,12 +79,12 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       if (toUpdateQuestion is null)
       {
-        throw new KeyNotFoundException($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
+        throw new Exception($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
       if (string.IsNullOrWhiteSpace(question.Content))
       {
-        throw new ArgumentNullException("question.Content", "O nome não pode ser vazio!");
+        throw new Exception("O nome não pode ser vazio!");
       }
 
       bool updated = await _questionsRepository.UpdateQuestion(id, question);

@@ -20,14 +20,28 @@ namespace NpsApi.Presentation.Controllers
     [HttpGet]
     public async Task<ActionResult<FormsGroup>> GetGroups()
     {
-      return Ok(await _groupFormsService.GetGroups());
+      try
+      {
+        return Ok(await _groupFormsService.GetGroups());
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<FormsGroup>> GetGroupById(int id)
     {
-      return Ok(await _groupFormsService.GetGroupById(id));
+      try
+      {
+        return Ok(await _groupFormsService.GetGroupById(id));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
@@ -36,7 +50,7 @@ namespace NpsApi.Presentation.Controllers
     {
       try
       {
-        return StatusCode(200, await _groupFormsService.CreateGroup(group));
+        return Ok(await _groupFormsService.CreateGroup(group));
       }
       catch (Exception ex)
       {
@@ -48,14 +62,28 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete("{id}")]
     public async Task<ActionResult<string>> DeleteGroup(int id)
     {
-      return Ok(await _groupFormsService.DeleteGroup(id));
+      try
+      {
+        return Ok(await _groupFormsService.DeleteGroup(id));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
     public async Task<ActionResult<bool>> UpdateGroup(int id, FormsGroup group)
     {
-      return Ok(await _groupFormsService.UpdateGroup(id, group));
+      try
+      {
+        return Ok(await _groupFormsService.UpdateGroup(id, group));
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
     }
   }
 }
