@@ -71,17 +71,10 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<List<FormsGroup>> GetGroups()
     {
-      List<FormsGroup> groupsList = await _formsGroupsRepository.GetGroups();
-
-      if (groupsList.Count == 0)
-      {
-        throw new Exception("Não há grupos cadastrados!");
-      }
-
-      return groupsList;
+      return await _formsGroupsRepository.GetGroups();
     }
 
-    public async Task<string> DeleteGroup(int id)
+    public async Task<bool> DeleteGroup(int id)
     {
       FormsGroup? group = await _formsGroupsRepository.GetGroupById(id);
 
@@ -106,12 +99,10 @@ namespace NpsApi._3___Domain.CommandHandlers
         await _formsRepository.DeleteForm(form.Id);
       }
 
-      bool deleted = await _formsGroupsRepository.DeleteGroup(id);
-
-      return deleted ? "Grupo excluído!" : "Não foi possível excluir o grupo!";
+      return await _formsGroupsRepository.DeleteGroup(id);
     }
 
-    public async Task<string> UpdateGroup(int id, FormsGroup group)
+    public async Task<bool> UpdateGroup(int id, FormsGroup group)
     {
       FormsGroup? toUpdateGroup = await _formsGroupsRepository.GetGroupById(id);
 
@@ -125,9 +116,7 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception("O nome não pode ser vazio!");
       }
 
-      bool updated = await _formsGroupsRepository.UpdateGroup(id, group);
-
-      return updated ? "Grupo editado!" : "Não foi possível editar o grupo!";
+      return await _formsGroupsRepository.UpdateGroup(id, group);
     }
   }
 }

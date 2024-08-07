@@ -43,7 +43,7 @@ builder.Services.AddScoped<NpsCommandHandler>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
   options.Cookie.Name = "NpsProject.AuthCookie";
-  options.ExpireTimeSpan = TimeSpan.FromHours(4);
+  options.ExpireTimeSpan = TimeSpan.FromHours(2);
   options.SlidingExpiration = true;
 });
 

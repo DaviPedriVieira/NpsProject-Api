@@ -64,17 +64,10 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<List<Form>> GetForms()
     {
-      List<Form> groupsList = await _formsRepository.GetForms();
-
-      if (groupsList.Count == 0)
-      {
-        throw new Exception("Não há formulários cadastrados!");
-      }
-
-      return groupsList;
+      return await _formsRepository.GetForms();
     }
 
-    public async Task<string> DeleteForm(int id)
+    public async Task<bool> DeleteForm(int id)
     {
       Form? form = await _formsRepository.GetFormById(id);
 
@@ -92,12 +85,10 @@ namespace NpsApi._3___Domain.CommandHandlers
         await _questionsRepository.DeleteQuestion(question.Id);
       }
 
-      bool deleted = await _formsRepository.DeleteForm(id);
-
-      return deleted ? "Formulário excluído!" : "Não foi possível excluir o formulário!";
+      return await _formsRepository.DeleteForm(id);
     }
 
-    public async Task<string> UpdateForm(int id, Form form)
+    public async Task<bool> UpdateForm(int id, Form form)
     {
       Form? toUpdateForm = await _formsRepository.GetFormById(id);
 
@@ -111,9 +102,7 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception("O nome do formulário não pode ser vazio!");
       }
 
-      bool updated = await _formsRepository.UpdateForm(id, form);
-
-      return updated ? "Formulário editado!" : "Não foi possível editar o formulário!";
+      return await _formsRepository.UpdateForm(id, form);
     }
   }
 }

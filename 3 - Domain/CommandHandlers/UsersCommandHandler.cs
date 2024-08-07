@@ -26,10 +26,9 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception("O nome/senha não podem ser vazios!");
       }
 
-      List<User> users = await GetUsers();
-      User? repeatedNameUser = users.Find(u => u.Name == user.Name);
+      User? foundUser = await _userRepository.GetUserByLogin(user.Name);
 
-      if (repeatedNameUser != null)
+      if (foundUser != null)
       {
         throw new Exception("Nome de usuário já existente!");
       }
@@ -39,18 +38,6 @@ namespace NpsApi._3___Domain.CommandHandlers
       await Login(createdUser.Name, createdUser.Password);
 
       return createdUser;
-    }
-
-    public async Task<List<User>> GetUsers()
-    {
-      List<User> usersList = await _userRepository.GetUsers();
-
-      if (usersList.Count == 0)
-      {
-        throw new Exception("Não há usuários cadastrados!");
-      }
-
-      return usersList;
     }
 
     public async Task<User> GetUserById(int id)
@@ -65,17 +52,16 @@ namespace NpsApi._3___Domain.CommandHandlers
       return user;
     }
 
-    public async Task<string> Login(string username, string password)
+    public async Task<bool> Login(string username, string password)
     {
       if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
       {
-        return "Usuário já logado!";
+        throw new Exception("Usuário já logado!");
       }
 
-      List<User> usersList = await _userRepository.GetUsers();
-      User? user = usersList.Find(user => user.Name == username && user.Password == password);
+      User? user = await _userRepository.GetUserByLogin(username);
 
-      if (user is null)
+      if (user is null || user.Password != password)
       {
         throw new Exception("Não há usuários com este nome e senha!");
       }
@@ -90,14 +76,14 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-      return "Login realizado!";
+      return true;
     }
 
-    public async Task<string> Logout()
+    public async Task<bool> Logout()
     {
      await _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-      return "Logout realizado!";
+      return true;
     }
 
     public async Task<List<User>> GetUsersAccordingAnswersGradeRange(int minValue, int maxValue)

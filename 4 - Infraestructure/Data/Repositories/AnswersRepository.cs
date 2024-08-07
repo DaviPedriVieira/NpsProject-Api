@@ -14,6 +14,7 @@ namespace NpsApi.Repositories
       _databaseConnection = sqlConnection;
     }
 
+
     public async Task<List<Answer>> SubmitAnswers(List<Answer> answers)
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
@@ -78,7 +79,7 @@ namespace NpsApi.Repositories
         return answersList;
       }
     }
-
+    
     public async Task<List<Answer>> GetAnswers()
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())

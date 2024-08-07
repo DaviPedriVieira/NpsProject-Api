@@ -30,15 +30,15 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<List<User>> GetUsers()
+    public async Task<User> GetUserByLogin(string username)
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
-        string query = "SELECT * FROM usuarios";
+        string query = $"SELECT * FROM usuarios WHERE nome = '{username}'";
 
-        List<User> usersList = new List<User>();
+        User? user = null;
 
         SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
@@ -46,18 +46,16 @@ namespace NpsApi.Repositories
 
         while (await sqlDataReader.ReadAsync())
         {
-          User user = new User
+          user = new User
           {
             Id = sqlDataReader.GetInt32("id"),
             Name = sqlDataReader.GetString("nome"),
             Password = sqlDataReader.GetString("senha"),
             Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
           };
-
-          usersList.Add(user);
         }
 
-        return usersList;
+        return user;
       }
     }
 

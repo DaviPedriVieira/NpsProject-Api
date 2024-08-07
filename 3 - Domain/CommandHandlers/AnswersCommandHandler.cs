@@ -54,14 +54,7 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception($"Erro na FK answer.UserId, não foi encontrado nenhum usuário com o Id = {userId}!");
       }
 
-      List<Answer> answers = await _answersRepository.GetAnswersByUserId(userId);
-
-      if (answers.Count == 0)
-      {
-        throw new Exception($"Não foi encontrada nenhuma resposta do usuário com o Id = {userId}!");
-      }
-
-      return answers;
+      return await _answersRepository.GetAnswersByUserId(userId);
     }
 
     public async Task<Answer> GetAnswerById(int id)
@@ -78,14 +71,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<List<Answer>> GetAnswers()
     {
-      List<Answer> answersList = await _answersRepository.GetAnswers();
-
-      if (answersList.Count == 0)
-      {
-        throw new Exception("Não há respostas cadastradas!");
-      }
-
-      return answersList;
+      return await _answersRepository.GetAnswers();
     }
   }
 }

@@ -17,22 +17,17 @@ namespace NpsApi.Application.Services
       return await _userCommandHandler.CreateUser(user);
     }
 
-    public async Task<List<User>> GetUsers()
-    {
-      return await _userCommandHandler.GetUsers();
-    }
-
     public async Task<User> GetUserById(int id)
     {
       return await _userCommandHandler.GetUserById(id);
     }
 
-    public async Task<string> Login(string username, string password)
+    public async Task<bool> Login(string username, string password)
     {
       return await _userCommandHandler.Login(username, password);
     }
 
-    public async Task<string> Logout()
+    public async Task<bool> Logout()
     {
       return await _userCommandHandler.Logout();
     }

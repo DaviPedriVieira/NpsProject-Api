@@ -30,20 +30,6 @@ namespace NpsApi.Presentation.Controllers
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpGet]
-    public async Task<ActionResult<User>> GetUsers()
-    {
-      try
-      {
-        return Ok(await _usersService.GetUsers());
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex.Message);
-      }
-    }
-
-    [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetUserById(int id)
     {

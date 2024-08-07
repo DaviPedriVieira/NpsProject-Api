@@ -60,7 +60,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Question>> DeleteQuestion(int id)
+    public async Task<ActionResult<bool>> DeleteQuestion(int id)
     {
       try
       {
@@ -74,7 +74,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<Question>> UpdateQuestion(int id, Question question)
+    public async Task<ActionResult<bool>> UpdateQuestion(int id, Question question)
     {
       try
       {

@@ -47,17 +47,10 @@ namespace NpsApi._3___Domain.CommandHandlers
 
     public async Task<List<Question>> GetQuestions()
     {
-      List<Question> questionsList = await _questionsRepository.GetQuestions();
-
-      if (questionsList.Count == 0)
-      {
-        throw new Exception("Não há perguntas cadastradas!");
-      }
-
-      return questionsList;
+      return await _questionsRepository.GetQuestions();
     }
 
-    public async Task<string> DeleteQuestion(int id)
+    public async Task<bool> DeleteQuestion(int id)
     {
       Question? question = await _questionsRepository.GetQuestionById(id);
 
@@ -68,12 +61,10 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       await _answersRepository.DeleteAnswersByQuestionId(id);
 
-      bool deleted = await _questionsRepository.DeleteQuestion(id);
-
-      return deleted ? "Pergunta excluída!" : "Não foi possível excluir a pergunta!";
+      return await _questionsRepository.DeleteQuestion(id);
     }
 
-    public async Task<string> UpdateQuestion(int id, Question question)
+    public async Task<bool> UpdateQuestion(int id, Question question)
     {
       Question? toUpdateQuestion = await _questionsRepository.GetQuestionById(id);
 
@@ -87,9 +78,7 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception("O nome não pode ser vazio!");
       }
 
-      bool updated = await _questionsRepository.UpdateQuestion(id, question);
-
-      return updated ? "Pergunta editada!" : "Não foi possível editar a pergunta!";
+      return await _questionsRepository.UpdateQuestion(id, question);
     }
   }
 }

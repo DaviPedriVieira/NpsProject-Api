@@ -12,7 +12,7 @@ namespace NpsApi._3___Domain.CommandHandlers
       _answersRepository = answersRepository;
     }
 
-    public async Task<int> GetNpsScore()
+    public async Task<float> GetNpsScore()
     {
       List<Answer> answersList = await _answersRepository.GetAnswers();
 
@@ -24,7 +24,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
       float npsScore = porcentagemPromoters - porcentagemDetractors;
 
-      return Convert.ToInt32(npsScore);
+      return npsScore;
     }
   }
 }

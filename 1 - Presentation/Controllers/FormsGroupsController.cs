@@ -60,7 +60,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<string>> DeleteGroup(int id)
+    public async Task<ActionResult<bool>> DeleteGroup(int id)
     {
       try
       {

@@ -60,7 +60,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpDelete("{id}")]
-    public async Task<ActionResult<Form>> DeleteForm(int id)
+    public async Task<ActionResult<bool>> DeleteForm(int id)
     {
       try
       {
@@ -74,7 +74,7 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<FormsGroup>> UpdateForm(int id, Form form)
+    public async Task<ActionResult<bool>> UpdateForm(int id, Form form)
     {
       try
       {
