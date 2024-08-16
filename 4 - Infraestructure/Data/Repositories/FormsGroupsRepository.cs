@@ -101,13 +101,13 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> UpdateGroup(int id, FormsGroup group)
+    public async Task<bool> UpdateGroup(int id, string newName)
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
-        string query = $"UPDATE grupoFormularios SET nome = '{group.Name}' WHERE id = {id}";
+        string query = $"UPDATE grupoFormularios SET nome = '{newName}' WHERE id = {id}";
 
         SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 

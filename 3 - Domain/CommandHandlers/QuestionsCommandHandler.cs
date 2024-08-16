@@ -64,7 +64,7 @@ namespace NpsApi._3___Domain.CommandHandlers
       return await _questionsRepository.DeleteQuestion(id);
     }
 
-    public async Task<bool> UpdateQuestion(int id, Question question)
+    public async Task<bool> UpdateQuestion(int id, string newName)
     {
       Question? toUpdateQuestion = await _questionsRepository.GetQuestionById(id);
 
@@ -73,12 +73,17 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception($"Não foi encontrado nenhuma pergunta com o Id = {id}!");
       }
 
-      if (string.IsNullOrWhiteSpace(question.Content))
+      if (string.IsNullOrWhiteSpace(newName))
       {
         throw new Exception("O nome não pode ser vazio!");
       }
 
-      return await _questionsRepository.UpdateQuestion(id, question);
+      return await _questionsRepository.UpdateQuestion(id, newName);
     }
-  }
+
+        public async Task<List<Question>> GetQuestionByFormId(int formId)
+        {
+            return await _questionsRepository.GetQuestionsByFormId(formId);
+        }
+    }
 }

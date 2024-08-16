@@ -83,26 +83,25 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception($"Não existe nenhum grupo com o id = {id}!");
       }
 
-      List<Form> formsInsideGroup = await _formsRepository.GetFormsByGroupId(id);
+      List<int> formIdsList = await _formsRepository.GetFormsByGroupIds(id);
 
-      foreach (Form form in formsInsideGroup)
+      if (formIdsList.Any())
       {
-        List<Question> questionsList = await _questionsRepository.GetQuestionsByFormId(form.Id);
+        List<int> questionIdsList = await _questionsRepository.GetQuestionsIdByFormIds(formIdsList);
 
-        foreach (Question question in questionsList)
+        if (questionIdsList.Any())
         {
-          await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+          await _answersRepository.DeleteAnswersByQuestionId(questionIdsList);
 
-          await _questionsRepository.DeleteQuestion(question.Id);
+          await _questionsRepository.DeleteQuestions(questionIdsList);
         }
-
-        await _formsRepository.DeleteForm(form.Id);
+        await _formsRepository.DeleteForms(formIdsList);
       }
 
       return await _formsGroupsRepository.DeleteGroup(id);
     }
 
-    public async Task<bool> UpdateGroup(int id, FormsGroup group)
+    public async Task<bool> UpdateGroup(int id, string newName)
     {
       FormsGroup? toUpdateGroup = await _formsGroupsRepository.GetGroupById(id);
 
@@ -111,12 +110,12 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception($"Não existe nenhum grupo com o id = {id}!");
       }
 
-      if (string.IsNullOrWhiteSpace(group.Name))
+      if (string.IsNullOrWhiteSpace(newName))
       {
         throw new Exception("O nome não pode ser vazio!");
       }
 
-      return await _formsGroupsRepository.UpdateGroup(id, group);
+      return await _formsGroupsRepository.UpdateGroup(id, newName);
     }
   }
 }

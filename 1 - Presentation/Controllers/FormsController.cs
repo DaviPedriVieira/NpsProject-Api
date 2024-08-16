@@ -44,7 +44,21 @@ namespace NpsApi.Presentation.Controllers
       }
     }
 
-    [Authorize(Policy = "AdmininistradorPolicy")]
+        [Authorize]
+        [HttpGet("Group/{groupId}")]
+        public async Task<ActionResult<List<Form>>> GetFormsByGroupId(int groupId)
+        {
+            try
+            {
+                return Ok(await _formsService.GetFormsByGroupId(groupId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
     public async Task<ActionResult<Form>> CreateForm(Form form)
     {
@@ -74,11 +88,11 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<bool>> UpdateForm(int id, Form form)
+    public async Task<ActionResult<bool>> UpdateForm(int id, string newName)
     {
       try
       {
-        return Ok(await _formsService.UpdateForm(id, form));
+        return Ok(await _formsService.UpdateForm(id, newName));
       }
       catch (Exception ex)
       {

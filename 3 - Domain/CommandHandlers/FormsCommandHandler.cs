@@ -76,19 +76,19 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
-      List<Question> questionsList = await _questionsRepository.GetQuestionsByFormId(id);
+      List<int> questionIdsList = await _questionsRepository.GetQuestionsIdByFormIds(id);
 
-      foreach (Question question in questionsList)
+      if (questionIdsList.Any())
       {
-        await _answersRepository.DeleteAnswersByQuestionId(question.Id);
+        await _answersRepository.DeleteAnswersByQuestionId(questionIdsList);
 
-        await _questionsRepository.DeleteQuestion(question.Id);
+        await _questionsRepository.DeleteQuestions(questionIdsList);
       }
-
+      
       return await _formsRepository.DeleteForm(id);
     }
 
-    public async Task<bool> UpdateForm(int id, Form form)
+    public async Task<bool> UpdateForm(int id, string newName)
     {
       Form? toUpdateForm = await _formsRepository.GetFormById(id);
 
@@ -97,12 +97,17 @@ namespace NpsApi._3___Domain.CommandHandlers
         throw new Exception($"Não foi encontrado nenhum formulário com o Id = {id}!");
       }
 
-      if (string.IsNullOrWhiteSpace(form.Name))
+      if (string.IsNullOrWhiteSpace(newName))
       {
         throw new Exception("O nome do formulário não pode ser vazio!");
       }
 
-      return await _formsRepository.UpdateForm(id, form);
+      return await _formsRepository.UpdateForm(id, newName);
     }
-  }
+
+        public async Task<List<Form>> GetFormsByGroupId(int groupId)
+        {
+            return await _formsRepository.GetFormsByGroupId(groupId);
+        }
+    }
 }

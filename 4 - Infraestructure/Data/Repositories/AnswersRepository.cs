@@ -144,6 +144,22 @@ namespace NpsApi.Repositories
       }
     }
 
+    public async Task<bool> DeleteAnswersByQuestionId(List<int> questionIds)
+    {
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
+      {
+        await sqlConnection.OpenAsync();
+
+        string idsString = string.Join(", ", questionIds);
+
+        string query = $"DELETE FROM respostas WHERE idPergunta in ({idsString})";
+
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
+      }
+    }
+
     public async Task<bool> DeleteAnswersByQuestionId(int questionId)
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())

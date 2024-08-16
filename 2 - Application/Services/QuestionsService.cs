@@ -32,9 +32,14 @@ namespace NpsApi.Application.Services
       return await _questionsCommandHandler.DeleteQuestion(id);
     }
 
-    public async Task<bool> UpdateQuestion(int id, Question question)
+    public async Task<bool> UpdateQuestion(int id, string newName)
     {
-      return await _questionsCommandHandler.UpdateQuestion(id, question);
+      return await _questionsCommandHandler.UpdateQuestion(id, newName);
     }
-  }
+
+        public async Task<List<Question>> GetQuestionByFormId(int formId)
+        {
+            return await _questionsCommandHandler.GetQuestionByFormId(formId);
+        }
+    }
 }

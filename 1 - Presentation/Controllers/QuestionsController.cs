@@ -44,7 +44,21 @@ namespace NpsApi.Presentation.Controllers
       }
     }
 
-    [Authorize(Policy = "AdmininistradorPolicy")]
+        [Authorize]
+        [HttpGet("Form/{formId}")]
+        public async Task<ActionResult<Question>> GetQuestionByFormId(int formId)
+        {
+            try
+            {
+                return Ok(await _questionsService.GetQuestionByFormId(formId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
     public async Task<ActionResult<Question>> CreateQuestion(Question question)
     {
@@ -74,11 +88,11 @@ namespace NpsApi.Presentation.Controllers
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<bool>> UpdateQuestion(int id, Question question)
+    public async Task<ActionResult<bool>> UpdateQuestion(int id, string newName)
     {
       try
       {
-        return Ok(await _questionsService.UpdateQuestion(id, question));
+        return Ok(await _questionsService.UpdateQuestion(id, newName));
       }
       catch (Exception ex)
       {

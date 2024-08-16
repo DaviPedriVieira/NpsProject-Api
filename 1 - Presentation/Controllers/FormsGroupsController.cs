@@ -62,23 +62,23 @@ namespace NpsApi.Presentation.Controllers
     [HttpDelete("{id}")]
     public async Task<ActionResult<bool>> DeleteGroup(int id)
     {
-      try
-      {
+      //try
+      //{
         return Ok(await _groupFormsService.DeleteGroup(id));
-      }
-      catch (Exception ex)
-      {
-        return BadRequest(ex.Message);
-      }
+      //}
+      //catch (Exception ex)
+      //{
+      //  return BadRequest(ex.Message);
+      //}
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<bool>> UpdateGroup(int id, FormsGroup group)
+    public async Task<ActionResult<bool>> UpdateGroup(int id, string newName)
     {
       try
       {
-        return Ok(await _groupFormsService.UpdateGroup(id, group));
+        return Ok(await _groupFormsService.UpdateGroup(id, newName));
       }
       catch (Exception ex)
       {

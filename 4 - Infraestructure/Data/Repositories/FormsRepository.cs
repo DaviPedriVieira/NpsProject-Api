@@ -103,13 +103,29 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<bool> UpdateForm(int id, Form form)
+    public async Task<bool> DeleteForms(List<int> ids)
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {
         await sqlConnection.OpenAsync();
 
-        string query = $"UPDATE formularios SET nome = '{form.Name}' WHERE id = {id}";
+        string idsString = string.Join(", ", ids);
+
+        string query = $"DELETE FROM formularios WHERE id in ({idsString})";
+
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        return await sqlCommand.ExecuteNonQueryAsync() > 0;
+      }
+    }
+
+    public async Task<bool> UpdateForm(int id, string newName)
+    {
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
+      {
+        await sqlConnection.OpenAsync();
+
+        string query = $"UPDATE formularios SET nome = '{newName}' WHERE id = {id}";
 
         SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
 
@@ -145,6 +161,31 @@ namespace NpsApi.Repositories
         }
 
         return formsList;
+      }
+    }
+
+    public async Task<List<int>> GetFormsByGroupIds(int groupId)
+    {
+      using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
+      {
+        await sqlConnection.OpenAsync();
+
+        string query = $"SELECT * FROM formularios WHERE idGrupo = {groupId}";
+
+        List<int> formsIdList = new List<int>();
+
+        SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+        SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+        while (await sqlDataReader.ReadAsync())
+        {
+          int Id = sqlDataReader.GetInt32("id");
+
+          formsIdList.Add(Id);
+        }
+
+        return formsIdList;
       }
     }
   }

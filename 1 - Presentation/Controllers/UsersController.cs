@@ -111,6 +111,20 @@ namespace NpsApi.Presentation.Controllers
         return BadRequest(ex.Message);
       }
     }
-  }
+
+        [Authorize]
+        [HttpGet("Type")]
+        public async Task<ActionResult<bool>> UserIsAdmin(string username)
+        {
+            try
+            {
+                return Ok(await _usersService.UserIsAdmin(username));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    }
 }
 
