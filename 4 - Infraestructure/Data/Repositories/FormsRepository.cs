@@ -29,7 +29,7 @@ namespace NpsApi.Repositories
       }
     }
 
-    public async Task<Form?> GetFormById(int id)
+        public async Task<Form?> GetFormById(int id)
     {
       using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
       {

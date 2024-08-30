@@ -59,6 +59,37 @@ namespace NpsApi.Repositories
             }
         }
 
+        public async Task<List<User>> GetUsers()
+        {
+            using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
+            {
+                await sqlConnection.OpenAsync();
+
+                string query = "SELECT * FROM usuarios";
+
+                List<User> users = new List<User>();
+
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+                SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+                while (await sqlDataReader.ReadAsync())
+                {
+                    User user = new User
+                    {
+                        Id = sqlDataReader.GetInt32("id"),
+                        Name = sqlDataReader.GetString("nome"),
+                        Password = sqlDataReader.GetString("senha"),
+                        Type = Enum.Parse<UserType>(sqlDataReader.GetString("tipo")),
+                    };
+
+                    users.Add(user);
+                }
+
+                return users;
+            }
+        }
+
         public async Task<bool> UserIsAdmin(string username)
         {
             using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())

@@ -14,20 +14,33 @@ namespace NpsApi.Repositories
             _databaseConnection = sqlConnection;
         }
 
-        public async Task<Question> CreateQuestion(Question question)
+        public async Task<List<Question>> CreateQuestion(List<Question> questions)
         {
             using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
             {
                 await sqlConnection.OpenAsync();
 
-                string query = $"INSERT INTO perguntas VALUES ({question.FormId},'{question.Content}'); SELECT SCOPE_IDENTITY();";
+                DataTable questionsTable = new DataTable();
+                questionsTable.TableName = "perguntas";
+                questionsTable.Columns.Add("formId", typeof(int));
+                questionsTable.Columns.Add("content", typeof(string));
 
-                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+                foreach (Question question in questions)
+                {
+                    questionsTable.Rows.Add(question.FormId, question.Content);
+                }
 
-                question.Id = Convert.ToInt32(await sqlCommand.ExecuteScalarAsync());
-                return question;
+                SqlBulkCopy sqlBulk = new SqlBulkCopy(sqlConnection);
+                sqlBulk.DestinationTableName = questionsTable.TableName;
+                sqlBulk.ColumnMappings.Add("formId", "idFormulario");
+                sqlBulk.ColumnMappings.Add("content", "conteudo");
+
+
+                sqlBulk.WriteToServer(questionsTable);
+                return questions;
             }
         }
+
 
         public async Task<Question?> GetQuestionById(int id)
         {
@@ -150,9 +163,6 @@ namespace NpsApi.Repositories
 
         public async Task<List<int>> GetQuestionsIdByFormIds(List<int> formIds)
         {
-            if (formIds.Count <= 0)
-                throw new Exception();
-
             using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
             {
                 await sqlConnection.OpenAsync();

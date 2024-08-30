@@ -12,7 +12,7 @@ namespace NpsApi._2___Application.Services
       _npsCommandHandler = npsCommandHandler;
     }
     
-    public async Task<float> GetNpsScore()
+    public async Task<int> GetNpsScore()
     {
       return await _npsCommandHandler.GetNpsScore();
     }

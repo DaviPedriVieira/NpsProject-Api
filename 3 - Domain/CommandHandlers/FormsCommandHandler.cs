@@ -42,8 +42,8 @@ namespace NpsApi._3___Domain.CommandHandlers
       foreach (Question question in form.Questions)
       {
         question.FormId = newForm.Id;
-        await _questionsRepository.CreateQuestion(question);
       }
+        await _questionsRepository.CreateQuestion(form.Questions.ToList());
 
       return newForm;
     }

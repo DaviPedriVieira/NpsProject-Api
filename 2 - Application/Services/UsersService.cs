@@ -47,6 +47,11 @@ namespace NpsApi.Application.Services
       return await _userCommandHandler.GetUsersAccordingAnswersGradeRange(0, 6);
     }
 
+        public async Task<List<User>> GetUsers()
+        {
+            return await _userCommandHandler.GetUsers();
+        }
+
         public async Task<bool> UserIsAdmin(string username)
         {
             return await _userCommandHandler.UserIsAdmin(username);

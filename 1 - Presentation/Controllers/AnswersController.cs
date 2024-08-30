@@ -44,7 +44,21 @@ namespace NpsApi.Presentation.Controllers
       }
     }
 
-    [Authorize(Policy = "AdmininistradorPolicy")]
+        [Authorize(Policy = "AdmininistradorPolicy")]
+        [HttpGet("Question/{questionId}")]
+        public async Task<ActionResult<List<Answer>>> GetAnswersByQuestionId(int questionId)
+        {
+            try
+            {
+                return Ok(await _answerService.GetAnswersByQuestionId(questionId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpGet("{id}")]
     public async Task<ActionResult<Answer>> GetAnswerById(int id)
     {

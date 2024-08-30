@@ -67,10 +67,10 @@ namespace NpsApi._3___Domain.CommandHandlers
             }
 
             List<Claim> claims = new List<Claim> {
-         new Claim(ClaimTypes.Name, user.Name),
-         new Claim(ClaimTypes.Role, user.Type.ToString()),
-         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-      };
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, user.Type.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -109,7 +109,18 @@ namespace NpsApi._3___Domain.CommandHandlers
 
         public async Task<bool> UserIsAdmin(string username)
         {
+            if (username.Trim() == "")
+            {
+                throw new Exception("O nome de usuário não pode ser vazio");
+            }
+
             return await _userRepository.UserIsAdmin(username);
         }
+
+        public async Task<List<User>> GetUsers()
+        {
+            return await _userRepository.GetUsers();
+        }
+
     }
 }

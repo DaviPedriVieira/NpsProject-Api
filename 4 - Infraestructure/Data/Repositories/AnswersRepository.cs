@@ -173,5 +173,38 @@ namespace NpsApi.Repositories
         return await sqlCommand.ExecuteNonQueryAsync() > 0;
       }
     }
-  }
+
+        public async Task<List<Answer>> GetAnswersByQuestionId(int questionId)
+        {
+            using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
+            {
+                await sqlConnection.OpenAsync();
+
+                string query = $"SELECT * FROM respostas WHERE idPergunta = {questionId}";
+
+                List<Answer> answers = new List<Answer>();
+
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+                SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+                while (await sqlDataReader.ReadAsync())
+                {
+                    Answer answer = new Answer
+                    {
+                        Id = sqlDataReader.GetInt32("id"),
+                        QuestionId = sqlDataReader.GetInt32("idPergunta"),
+                        UserId = sqlDataReader.GetInt32("idUsuario"),
+                        Grade = sqlDataReader.GetInt32("resposta"),
+                        Description = sqlDataReader.GetString("descricao"),
+                        Date = sqlDataReader.GetDateTime("dataHora"),
+                    };
+
+                    answers.Add(answer);
+                }
+
+                return answers;
+            }
+        }
+    }
 }

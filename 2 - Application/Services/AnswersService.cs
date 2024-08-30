@@ -31,5 +31,10 @@ namespace NpsApi.Application.Services
     {
       return await _answersCommandHandler.GetAnswers();
     }
-  }
+
+        public async Task<List<Answer>> GetAnswersByQuestionId(int questionId)
+        {
+            return await _answersCommandHandler.GetAnswersByQuestionId(questionId);
+        }
+    }
 }

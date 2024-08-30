@@ -73,5 +73,10 @@ namespace NpsApi._3___Domain.CommandHandlers
     {
       return await _answersRepository.GetAnswers();
     }
-  }
+
+        public async Task<List<Answer>> GetAnswersByQuestionId(int questionId)
+        {
+            return await _answersRepository.GetAnswersByQuestionId(questionId);
+        }
+    }
 }

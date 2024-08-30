@@ -58,13 +58,27 @@ namespace NpsApi.Presentation.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("ids/Form/{formId}")]
+        public async Task<ActionResult<List<int>>> GetQuestionIdsByFormId(int formId)
+        {
+            try
+            {
+                return Ok(await _questionsService.GetQuestionsIdsByFormId(formId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [Authorize(Policy = "AdmininistradorPolicy")]
     [HttpPost]
-    public async Task<ActionResult<Question>> CreateQuestion(Question question)
+    public async Task<ActionResult<Question>> CreateQuestion(List<Question> questions)
     {
       try
       {
-        return Ok(await _questionsService.Create(question));
+        return Ok(await _questionsService.Create(questions));
       }
       catch (Exception ex)
       {

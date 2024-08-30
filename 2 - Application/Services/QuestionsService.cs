@@ -12,9 +12,9 @@ namespace NpsApi.Application.Services
       _questionsCommandHandler = questionsCommandHandler;
     }
 
-    public async Task<Question> Create(Question question)
+    public async Task<List<Question>> Create(List<Question> questions)
     {
-      return await _questionsCommandHandler.CreateQuestion(question);
+      return await _questionsCommandHandler.CreateQuestion(questions);
     }
 
     public async Task<Question> GetQuestionById(int id)
@@ -40,6 +40,11 @@ namespace NpsApi.Application.Services
         public async Task<List<Question>> GetQuestionByFormId(int formId)
         {
             return await _questionsCommandHandler.GetQuestionByFormId(formId);
+        }
+
+        public async Task<List<int>> GetQuestionsIdsByFormId(int formId)
+        {
+            return await _questionsCommandHandler.GetQuestionIdByFormId(formId);
         }
     }
 }
