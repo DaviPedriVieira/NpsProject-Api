@@ -44,17 +44,22 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 .AddCookie(options =>
 {
     options.Cookie.Name = "NpsProject.AuthCookie";
-    options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    options.ExpireTimeSpan = TimeSpan.FromHours(4);
     options.SlidingExpiration = true;
     options.Cookie.HttpOnly = false;
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
     options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
 });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "NpsProject.AuthCookie";
-    options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    options.ExpireTimeSpan = TimeSpan.FromHours(4);
     options.SlidingExpiration = true;
     options.Cookie.HttpOnly = false;
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;

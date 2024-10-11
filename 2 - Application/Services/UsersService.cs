@@ -22,7 +22,7 @@ namespace NpsApi.Application.Services
       return await _userCommandHandler.GetUserById(id);
     }
 
-    public async Task<bool> Login(string username, string password)
+    public async Task<User> Login(string username, string password)
     {
       return await _userCommandHandler.Login(username, password);
     }

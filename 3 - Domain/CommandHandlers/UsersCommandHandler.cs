@@ -35,8 +35,6 @@ namespace NpsApi._3___Domain.CommandHandlers
 
             User createdUser = await _userRepository.CreateUser(user);
 
-            await Login(createdUser.Name, createdUser.Password);
-
             return createdUser;
         }
 
@@ -52,7 +50,7 @@ namespace NpsApi._3___Domain.CommandHandlers
             return user;
         }
 
-        public async Task<bool> Login(string username, string password)
+        public async Task<User> Login(string username, string password)
         {
             if (_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
@@ -76,7 +74,7 @@ namespace NpsApi._3___Domain.CommandHandlers
 
             await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-            return true;
+            return user;
         }
 
         public async Task<bool> Logout()

@@ -16,7 +16,7 @@ namespace NpsApi._1___Presentation.Controllers
     }
 
     [Authorize(Policy = "AdmininistradorPolicy")]
-    [HttpGet("NpsScore")]
+    [HttpGet]
     public async Task<ActionResult<int>> GetNpsScore()
     {
       try

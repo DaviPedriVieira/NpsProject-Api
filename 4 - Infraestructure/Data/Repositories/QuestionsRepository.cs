@@ -35,9 +35,63 @@ namespace NpsApi.Repositories
                 sqlBulk.ColumnMappings.Add("formId", "idFormulario");
                 sqlBulk.ColumnMappings.Add("content", "conteudo");
 
-
                 sqlBulk.WriteToServer(questionsTable);
-                return questions;
+
+                string selectQuery = $"SELECT TOP {questions.Count} * FROM perguntas ORDER BY id DESC";
+
+                SqlCommand sqlCommand = new SqlCommand(selectQuery, sqlConnection);
+
+                SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+                List<Question> questionsList = new List<Question>();
+
+                while (await sqlDataReader.ReadAsync())
+                {
+                    Question question = new Question
+                    {
+                        Id = sqlDataReader.GetInt32("id"),
+                        FormId = sqlDataReader.GetInt32("idFormulario"),
+                        Content = sqlDataReader.GetString("conteudo"),
+                        Answers = new List<Answer>(),
+                    };
+
+                    questionsList.Add(question);
+                }
+
+                Console.WriteLine(questionsList);
+
+                return questionsList;
+            }
+        }
+
+        public async Task<List<Question>> GetQuestionsAfterBulkInsert(List<Question> questions)
+        {
+            using (SqlConnection sqlConnection = _databaseConnection.GetConnectionString())
+            {
+                await sqlConnection.OpenAsync();
+
+                string query = $"SELECT TOP {questions.Count} * FROM perguntas ORDER BY id DESC";
+
+                List<Question> questionsList = new List<Question>();
+
+                SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
+
+                SqlDataReader sqlDataReader = await sqlCommand.ExecuteReaderAsync();
+
+                while (await sqlDataReader.ReadAsync())
+                {
+                    Question question = new Question
+                    {
+                        Id = sqlDataReader.GetInt32("id"),
+                        FormId = sqlDataReader.GetInt32("idFormulario"),
+                        Content = sqlDataReader.GetString("conteudo"),
+                        Answers = new List<Answer>(),
+                    };
+
+                    questionsList.Add(question);
+                }
+
+                return questionsList;
             }
         }
 
